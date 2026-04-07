@@ -15,6 +15,10 @@
     let
       system = "aarch64-darwin"; 
       username = "dz";
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
     in {
     darwinConfigurations = {
       dzs-MacBook-Pro = darwin.lib.darwinSystem {
@@ -34,11 +38,18 @@
       };
     };
 
+      apps.${system}.rebuild = {
+        type = "app";
+        program = "${pkgs.writeShellApplication {
+          name = "rebuild";
+          text = ''
+            exec /usr/bin/sudo ${pkgs.nix}/bin/nix run nix-darwin#darwin-rebuild -- switch --flake .#dzs-MacBook-Pro "$@"
+          '';
+        }}/bin/rebuild";
+      };
+
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          inherit system;
-          config.allowUnfree = true;
-        };
+        pkgs = pkgs;
         modules = [ ./home.nix ];
       };
     };
