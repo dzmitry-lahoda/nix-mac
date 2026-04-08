@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, pkgs-unstable, lib, ... }:
 
 let
   username = "dz";
@@ -16,8 +16,10 @@ home.file.".config/nixpkgs/config.nix".text = ''
 
  programs.ssh = {
     enable = true;
+    enableDefaultConfig = false;
 
     matchBlocks = {
+      "*" = {};
       "github.com" = {
         hostname = "github.com";
         user = "git";
@@ -35,6 +37,16 @@ home.file.".config/nixpkgs/config.nix".text = ''
   
   programs.home-manager.enable = true;
   programs.bash.enable = true;
+  programs.git = {
+    enable = true;
+    settings = {
+      user.name = "dz";
+      user.email = "dzmitry@lahoda.pro";
+      gpg.format = "ssh";
+      commit.gpgsign = true;
+      tag.gpgSign = true;
+    };
+  };
 
   home.activation.setGhosttyDefault = lib.hm.dag.entryAfter ["writeBoundary"] ''
     if command -v duti >/dev/null 2>&1; then
@@ -44,22 +56,24 @@ home.file.".config/nixpkgs/config.nix".text = ''
   '';
 
 programs.vscode = {
-  profiles.default.extensions = with pkgs.vscode-extensions; [
+  package = pkgs-unstable.vscode;
+  profiles.default.extensions = with pkgs-unstable.vscode-extensions; [
     rust-lang.rust-analyzer
     jnoortheen.nix-ide
     ckolkman.vscode-postgres
     yzhang.markdown-all-in-one
+    github.vscode-github-actions
+    openai.chatgpt
   ];
 };
 
 # sudo nix run nix-darwin#darwin-rebuild -- switch --flake .#dzs-MacBook-Pro
-  home.packages = with pkgs; [
-    codex
+  home.packages = (with pkgs; [
     git
     git-lfs
     gh
     ghostty-bin
-    zellij
+    gitui
     ripgrep
     bat
     bottom
@@ -72,7 +86,13 @@ programs.vscode = {
     sd
     delta
     duti
-    vscode
     openssh
-  ];
+  ]) ++ (with pkgs-unstable; [
+    codex
+    helix
+    jujutsu
+    process-compose
+    zellij
+    secretive
+  ]);
 }
