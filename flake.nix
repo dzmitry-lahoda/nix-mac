@@ -56,7 +56,16 @@
         program = "${pkgs.writeShellApplication {
           name = "rebuild";
           text = ''
-            exec /usr/bin/sudo ${pkgs.nix}/bin/nix run nix-darwin#darwin-rebuild -- switch --flake .#dzs-MacBook-Pro "$@"
+            set -euo pipefail
+
+            /usr/bin/sudo ${pkgs.nix}/bin/nix run nix-darwin#darwin-rebuild -- switch --flake .#dzs-MacBook-Pro "$@"
+
+            desired_shell=/run/current-system/sw/bin/bash
+            current_shell="$(/usr/bin/dscl . -read /Users/${username} UserShell 2>/dev/null | /usr/bin/awk '{ print $2 }')"
+
+            if [ "$current_shell" != "$desired_shell" ]; then
+              /usr/bin/chsh -s "$desired_shell"
+            fi
           '';
         }}/bin/rebuild";
       };
@@ -68,5 +77,7 @@
         };
         modules = [ ./home.nix ];
       };
+
+      formatter.${system} = pkgs.nixfmt-rfc-style;
     };
 }

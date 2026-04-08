@@ -55,7 +55,6 @@ programs.vscode = {
   ];
 };
 
-# sudo nix run nix-darwin#darwin-rebuild -- switch --flake .#dzs-MacBook-Pro
   home.packages = (with pkgs; [
     git
     git-lfs
