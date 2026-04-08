@@ -8,40 +8,34 @@ in
   home.username = username;
   home.homeDirectory = homeDir;
   home.stateVersion = "25.11";
-
-
-home.file.".config/nixpkgs/config.nix".text = ''
+  home.file.".config/nixpkgs/config.nix".text = ''
     allowUnfree = true;
   '';
 
  programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
-
-    matchBlocks = {
-      "*" = {};
-      "github.com" = {
-        hostname = "github.com";
-        user = "git";
-        identityFile = "~/.ssh/id_ed25519_github";
-        identitiesOnly = true;
-        addKeysToAgent = "yes";
-        # non mac native git cannot use apple hardware so easy,
-        # 
-        #extraOptions = {
-        #  UseKeychain = "yes";
-        #};
-      };
-    };
   };
   
   programs.home-manager.enable = true;
-  programs.bash.enable = true;
+  programs.bash = {
+    enable = true;
+    sessionVariables = {
+      SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
+    };
+  };
+  programs.zsh = {
+    enable = true;
+    sessionVariables = {
+      SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
+    };
+  };
   programs.git = {
     enable = true;
     settings = {
-      user.name = "dz";
+      user.name = username;
       user.email = "dzmitry@lahoda.pro";
+      user.signingkey = "${homeDir}/.ssh/id_ed25519_github.pub";
       gpg.format = "ssh";
       commit.gpgsign = true;
       tag.gpgSign = true;

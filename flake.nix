@@ -33,7 +33,11 @@
           {
             nix.enable = false;
             nixpkgs.config.allowUnfree = true;
-            users.users.${username}.home = "/Users/${username}";
+            environment.shells = [ pkgs.bashInteractive ];
+            users.users.${username} = {
+              home = "/Users/${username}";
+              shell = pkgs.bashInteractive;
+            };
             system.stateVersion = 2;
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
