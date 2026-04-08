@@ -38,6 +38,12 @@ in
     };
   };
 
+
+
+  services.syncthing = {
+    enable = true;
+  };
+
   home.activation.setGhosttyDefault = lib.hm.dag.entryAfter ["writeBoundary"] ''
     if command -v duti >/dev/null 2>&1; then
       duti -s com.mitchellh.ghostty public.unix-executable all || true
