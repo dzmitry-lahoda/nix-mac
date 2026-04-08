@@ -8,6 +8,8 @@
 let
   username = "dz";
   homeDir = "/Users/${username}";
+  host = "dzs-MacBook-Pro.local";
+  email = "dzmitry@lahoda.pro";
 in
 {
   home.username = username;
@@ -15,6 +17,11 @@ in
   home.stateVersion = "25.11";
   home.file.".config/nixpkgs/config.nix".text = ''
     allowUnfree = true;
+  '';
+  home.file.".config/jj/config.toml".text = ''
+    [user]
+    name = "${username}"
+    email = "${email}"
   '';
 
   programs.ssh = {
@@ -35,7 +42,7 @@ in
     settings = {
       core.editor = "hx";
       user.name = username;
-      user.email = "dzmitry@lahoda.pro";
+      user.email = email;
       user.signingkey = "${homeDir}/.ssh/id_ed25519_github.pub";
       gpg.format = "ssh";
       commit.gpgsign = true;
