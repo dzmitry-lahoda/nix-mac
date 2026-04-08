@@ -19,9 +19,10 @@ in
 
   programs.home-manager.enable = true;
   programs.bash = {
-    enable = true;
+    enable = true; 
     sessionVariables = {
       SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
+      PATH="$HOME/.nix-profile/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH";
     };
   };
   programs.git = {
