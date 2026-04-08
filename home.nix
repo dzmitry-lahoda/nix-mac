@@ -104,6 +104,7 @@ in
       delta
       duti
       openssh
+      (pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
     ])
     ++ (with pkgs-unstable; [
       codex
