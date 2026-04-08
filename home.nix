@@ -12,11 +12,11 @@ in
     allowUnfree = true;
   '';
 
- programs.ssh = {
+  programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
   };
-  
+
   programs.home-manager.enable = true;
   programs.bash = {
     enable = true;
@@ -43,22 +43,28 @@ in
     fi
   '';
 
-programs.vscode = {
-  package = pkgs-unstable.vscode;
-  profiles.default.extensions = with pkgs-unstable.vscode-extensions; [
-    rust-lang.rust-analyzer
-    jnoortheen.nix-ide
-    ckolkman.vscode-postgres
-    yzhang.markdown-all-in-one
-    github.vscode-github-actions
-    openai.chatgpt
-  ];
-};
+  programs.vscode = {
+    enable = true;
+    package = pkgs-unstable.vscode;
+    profiles.default.extensions = with pkgs-unstable.vscode-extensions; [
+      rust-lang.rust-analyzer
+      jnoortheen.nix-ide
+      yzhang.markdown-all-in-one
+      github.vscode-github-actions
+      github.copilot
+      # not yet available
+      # ckolkman.vscode-postgres
+      # openai.chatgpt
+
+    ];
+  };
 
   home.packages = (with pkgs; [
     git
     git-lfs
     gh
+    # must be be deeply integrated
+    # brave
     ghostty-bin
     gitui
     ripgrep

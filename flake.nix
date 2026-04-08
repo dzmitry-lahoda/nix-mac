@@ -34,6 +34,11 @@
             nix.enable = false;
             nixpkgs.config.allowUnfree = true;
             programs.bash.enable = true;
+            # needed brave, suggested casks, nees homebrew -UI install
+            #homebrew = {
+            #  enable = true;
+            #  casks = [ "brave-browser" ];
+            #};
             environment.shells = [ pkgs.bashInteractive ];
             users.users.${username} = {
               home = "/Users/${username}";
