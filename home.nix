@@ -47,24 +47,29 @@ in
   programs.vscode = {
     enable = true;
     package = pkgs-unstable.vscode;
-    profiles.default.extensions = with pkgs-unstable.vscode-extensions; [
-      rust-lang.rust-analyzer
-      jnoortheen.nix-ide
-      yzhang.markdown-all-in-one
-      github.vscode-github-actions
-      github.copilot
-      # not yet available
-      # ckolkman.vscode-postgres
-      # openai.chatgpt
+    profiles.default = {
+      userSettings = {
+        "git.openRepositoryInParentFolders" = "never";
+      };
+      extensions = with pkgs-unstable.vscode-extensions; [
+        rust-lang.rust-analyzer
+        jnoortheen.nix-ide
+        yzhang.markdown-all-in-one
+        github.vscode-github-actions
+        github.copilot
+        # not yet available
+        # ckolkman.vscode-postgres
+        # openai.chatgpt
 
-    ];
+      ];
+    };
   };
 
   home.packages = (with pkgs; [
     git
     git-lfs
     gh
-    # must be be deeply integrated
+    # must be be deeply integrated - seems needs cask
     # brave
     ghostty-bin
     gitui
