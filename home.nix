@@ -24,12 +24,6 @@ in
       SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
     };
   };
-  programs.zsh = {
-    enable = true;
-    sessionVariables = {
-      SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
-    };
-  };
   programs.git = {
     enable = true;
     settings = {
