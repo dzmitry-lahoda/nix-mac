@@ -28,6 +28,7 @@ in
   programs.git = {
     enable = true;
     settings = {
+      core.editor = "hx";
       user.name = username;
       user.email = "dzmitry@lahoda.pro";
       user.signingkey = "${homeDir}/.ssh/id_ed25519_github.pub";
@@ -88,6 +89,7 @@ in
     openssh
   ]) ++ (with pkgs-unstable; [
     codex
+    gemini-cli
     helix
     jujutsu
     process-compose
