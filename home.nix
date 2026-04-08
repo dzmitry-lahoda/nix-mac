@@ -23,6 +23,29 @@ in
     name = "${username}"
     email = "${email}"
   '';
+  home.file.".continue/config.yaml".text = ''
+    name: Local Continue
+    version: 1.0.0
+    schema: v1
+
+    models:
+      - name: LM Studio Codestral 22B
+        provider: openai
+        model: codestral-22b
+        apiBase: http://localhost:1234/v1
+        apiKey: lm-studio
+        useLegacyCompletionsEndpoint: true
+        roles:
+          - autocomplete
+        autocompleteOptions:
+          disable: false
+          debounceDelay: 250
+          maxPromptTokens: 1024
+          modelTimeout: 150
+          maxSuffixPercentage: 0.2
+          prefixPercentage: 0.3
+          onlyMyCode: true
+  '';
 
   programs.ssh = {
     enable = true;
@@ -67,13 +90,16 @@ in
     profiles.default = {
       userSettings = {
         "git.openRepositoryInParentFolders" = "never";
+        "editor.inlineSuggest.enabled" = true;
       };
       extensions = with pkgs-unstable.vscode-extensions; [
         rust-lang.rust-analyzer
         jnoortheen.nix-ide
         yzhang.markdown-all-in-one
         github.vscode-github-actions
-        github.copilot
+        # tryig my mac local ai instead
+        # github.copilot
+        continue.continue
         # not yet available
         # ckolkman.vscode-postgres
         # openai.chatgpt
@@ -111,6 +137,7 @@ in
       gemini-cli
       helix
       jujutsu
+      lmstudio
       process-compose
       zellij
       secretive
