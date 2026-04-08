@@ -46,6 +46,7 @@
             {
               nix.enable = false;
               nixpkgs.config.allowUnfree = true;
+              nixpkgs.overlays = [ rust-overlay.overlays.default ];
               programs.bash.enable = true;
               environment.shells = [ pkgs.bashInteractive ];
               users.users.${username} = {
@@ -64,30 +65,47 @@
         };
       };
 
-      apps.${system}.rebuild = {
-        type = "app";
-        program = "${
-          pkgs.writeShellApplication {
-            name = "rebuild";
-            text = ''
-              set -euo pipefail
+      apps.${system} = {
+        rebuild = {
+          type = "app";
+          program = "${
+            pkgs.writeShellApplication {
+              name = "rebuild";
+              text = ''
+                set -euo pipefail
 
-              if ! ${pkgs.git}/bin/git diff --quiet || ! ${pkgs.git}/bin/git diff --cached --quiet; then
-                echo "Refusing to rebuild: commit or stash your changes first." >&2
-                exit 1
-              fi
+                if ! ${pkgs.git}/bin/git diff --quiet || ! ${pkgs.git}/bin/git diff --cached --quiet; then
+                  echo "Refusing to rebuild: commit or stash your changes first." >&2
+                  exit 1
+                fi
 
-              /usr/bin/sudo ${pkgs.nix}/bin/nix run nix-darwin#darwin-rebuild -- switch --flake .#dzs-MacBook-Pro "$@"
+                /usr/bin/sudo ${pkgs.nix}/bin/nix run nix-darwin#darwin-rebuild -- switch --flake .#dzs-MacBook-Pro "$@"
 
-              desired_shell=/run/current-system/sw/bin/bash
-              current_shell="$(/usr/bin/dscl . -read /Users/${username} UserShell 2>/dev/null | /usr/bin/awk '{ print $2 }')"
+                desired_shell=/run/current-system/sw/bin/bash
+                current_shell="$(/usr/bin/dscl . -read /Users/${username} UserShell 2>/dev/null | /usr/bin/awk '{ print $2 }')"
 
-              if [ "$current_shell" != "$desired_shell" ]; then
-                /usr/bin/chsh -s "$desired_shell"
-              fi
-            '';
-          }
-        }/bin/rebuild";
+                if [ "$current_shell" != "$desired_shell" ]; then
+                  /usr/bin/chsh -s "$desired_shell"
+                fi
+              '';
+            }
+          }/bin/rebuild";
+        };
+
+        check = {
+          type = "app";
+          program = "${
+            pkgs.writeShellApplication {
+              name = "check";
+              text = ''
+                set -euo pipefail
+
+                ${pkgs.nix}/bin/nix flake check
+                ${pkgs.nix}/bin/nix eval .#homeConfigurations.${username}.activationPackage.drvPath
+              '';
+            }
+          }/bin/check";
+        };
       };
 
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
