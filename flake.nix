@@ -58,6 +58,11 @@
           text = ''
             set -euo pipefail
 
+            if ! ${pkgs.git}/bin/git diff --quiet || ! ${pkgs.git}/bin/git diff --cached --quiet; then
+              echo "Refusing to rebuild: commit or stash your changes first." >&2
+              exit 1
+            fi
+
             /usr/bin/sudo ${pkgs.nix}/bin/nix run nix-darwin#darwin-rebuild -- switch --flake .#dzs-MacBook-Pro "$@"
 
             desired_shell=/run/current-system/sw/bin/bash
