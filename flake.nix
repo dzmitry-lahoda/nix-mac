@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
- 
+
     darwin.url = "github:lnl7/nix-darwin/nix-darwin-25.11";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -12,9 +12,16 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, home-manager, darwin, ... }:
+  outputs =
+    {
+      nixpkgs,
+      nixpkgs-unstable,
+      home-manager,
+      darwin,
+      ...
+    }:
     let
-      system = "aarch64-darwin"; 
+      system = "aarch64-darwin";
       username = "dz";
       pkgs = import nixpkgs {
         inherit system;
@@ -24,55 +31,58 @@
         inherit system;
         config.allowUnfree = true;
       };
-    in {
-    darwinConfigurations = {
-      dzs-MacBook-Pro = darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        modules = [
-          home-manager.darwinModules.home-manager
-          {
-            nix.enable = false;
-            nixpkgs.config.allowUnfree = true;
-            programs.bash.enable = true;         
-            environment.shells = [ pkgs.bashInteractive ];
-            users.users.${username} = {
-              home = "/Users/${username}";
-              shell = pkgs.bashInteractive;
-            };
-            system.stateVersion = 2;
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = {
-              inherit pkgs-unstable;
-            };
-            home-manager.users.${username} = import ./home.nix;
-          }
-        ];
+    in
+    {
+      darwinConfigurations = {
+        dzs-MacBook-Pro = darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          modules = [
+            home-manager.darwinModules.home-manager
+            {
+              nix.enable = false;
+              nixpkgs.config.allowUnfree = true;
+              programs.bash.enable = true;
+              environment.shells = [ pkgs.bashInteractive ];
+              users.users.${username} = {
+                home = "/Users/${username}";
+                shell = pkgs.bashInteractive;
+              };
+              system.stateVersion = 2;
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.extraSpecialArgs = {
+                inherit pkgs-unstable;
+              };
+              home-manager.users.${username} = import ./home.nix;
+            }
+          ];
+        };
       };
-    };
 
       apps.${system}.rebuild = {
         type = "app";
-        program = "${pkgs.writeShellApplication {
-          name = "rebuild";
-          text = ''
-            set -euo pipefail
+        program = "${
+          pkgs.writeShellApplication {
+            name = "rebuild";
+            text = ''
+              set -euo pipefail
 
-            if ! ${pkgs.git}/bin/git diff --quiet || ! ${pkgs.git}/bin/git diff --cached --quiet; then
-              echo "Refusing to rebuild: commit or stash your changes first." >&2
-              exit 1
-            fi
+              if ! ${pkgs.git}/bin/git diff --quiet || ! ${pkgs.git}/bin/git diff --cached --quiet; then
+                echo "Refusing to rebuild: commit or stash your changes first." >&2
+                exit 1
+              fi
 
-            /usr/bin/sudo ${pkgs.nix}/bin/nix run nix-darwin#darwin-rebuild -- switch --flake .#dzs-MacBook-Pro "$@"
+              /usr/bin/sudo ${pkgs.nix}/bin/nix run nix-darwin#darwin-rebuild -- switch --flake .#dzs-MacBook-Pro "$@"
 
-            desired_shell=/run/current-system/sw/bin/bash
-            current_shell="$(/usr/bin/dscl . -read /Users/${username} UserShell 2>/dev/null | /usr/bin/awk '{ print $2 }')"
+              desired_shell=/run/current-system/sw/bin/bash
+              current_shell="$(/usr/bin/dscl . -read /Users/${username} UserShell 2>/dev/null | /usr/bin/awk '{ print $2 }')"
 
-            if [ "$current_shell" != "$desired_shell" ]; then
-              /usr/bin/chsh -s "$desired_shell"
-            fi
-          '';
-        }}/bin/rebuild";
+              if [ "$current_shell" != "$desired_shell" ]; then
+                /usr/bin/chsh -s "$desired_shell"
+              fi
+            '';
+          }
+        }/bin/rebuild";
       };
 
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {

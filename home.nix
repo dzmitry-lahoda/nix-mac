@@ -1,4 +1,9 @@
-{ pkgs, pkgs-unstable, lib, ... }:
+{
+  pkgs,
+  pkgs-unstable,
+  lib,
+  ...
+}:
 
 let
   username = "dz";
@@ -19,10 +24,10 @@ in
 
   programs.home-manager.enable = true;
   programs.bash = {
-    enable = true; 
+    enable = true;
     sessionVariables = {
       SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
-      PATH="$HOME/.nix-profile/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH";
+      PATH = "$HOME/.nix-profile/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH";
     };
   };
   programs.git = {
@@ -38,13 +43,11 @@ in
     };
   };
 
-
-
   services.syncthing = {
     enable = true;
   };
 
-  home.activation.setGhosttyDefault = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.setGhosttyDefault = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     if command -v duti >/dev/null 2>&1; then
       duti -s com.mitchellh.ghostty public.unix-executable all || true
       duti -s com.mitchellh.ghostty public.shell-script all || true
@@ -72,34 +75,36 @@ in
     };
   };
 
-  home.packages = (with pkgs; [
-    git
-    git-lfs
-    gh
-    # must be be deeply integrated - seems needs cask
-    # brave
-    ghostty-bin
-    gitui
-    ripgrep
-    bat
-    bottom
-    skim
-    eza
-    fd
-    zoxide
-    procs
-    dust
-    sd
-    delta
-    duti
-    openssh
-  ]) ++ (with pkgs-unstable; [
-    codex
-    gemini-cli
-    helix
-    jujutsu
-    process-compose
-    zellij
-    secretive
-  ]);
+  home.packages =
+    (with pkgs; [
+      git
+      git-lfs
+      gh
+      # must be be deeply integrated - seems needs cask
+      # brave
+      ghostty-bin
+      gitui
+      ripgrep
+      bat
+      bottom
+      skim
+      eza
+      fd
+      zoxide
+      procs
+      dust
+      sd
+      delta
+      duti
+      openssh
+    ])
+    ++ (with pkgs-unstable; [
+      codex
+      gemini-cli
+      helix
+      jujutsu
+      process-compose
+      zellij
+      secretive
+    ]);
 }
