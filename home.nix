@@ -144,7 +144,7 @@ in
       process-compose
       zellij
       secretive
-    ]) ++ (with pkgs-llmstudio; [
+    ]) ++ (with pkgs-lmstudio; [
       lmstudio
     ]);
 }
