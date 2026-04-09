@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-lmstudio.url = "github:NixOS/nixpkgs/2ff9c783ebda94cbcb09defcce64a222deb725cd";
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -18,6 +19,7 @@
     {
       nixpkgs,
       nixpkgs-unstable,
+      nixpkgs-lmstudio,
       rust-overlay,
       home-manager,
       darwin,
@@ -35,6 +37,10 @@
         inherit system;
         config.allowUnfree = true;
         overlays = [ rust-overlay.overlays.default ];
+      };
+      pkgs-lmstudio = import nixpkgs-lmstudio {
+        inherit system;
+        config.allowUnfree = true;
       };
     in
     {
@@ -58,6 +64,7 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
                 inherit pkgs-unstable;
+                inherit pkgs-lmstudio;
               };
               home-manager.users.${username} = import ./home.nix;
             }
@@ -101,7 +108,7 @@
                 set -euo pipefail
 
                 ${pkgs.nix}/bin/nix flake check
-                ${pkgs.nix}/bin/nix eval .#homeConfigurations.${username}.activationPackage.drvPath
+                ${pkgs.nix}/bin/nix build .#homeConfigurations.${username}.config.home.path
               '';
             }
           }/bin/check";
@@ -112,6 +119,7 @@
         pkgs = pkgs;
         extraSpecialArgs = {
           inherit pkgs-unstable;
+          inherit pkgs-lmstudio;
         };
         modules = [ ./home.nix ];
       };

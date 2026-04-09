@@ -1,6 +1,7 @@
 {
   pkgs,
   pkgs-unstable,
+  pkgs-llmstudio,
   lib,
   ...
 }:
@@ -97,6 +98,7 @@ in
         jnoortheen.nix-ide
         yzhang.markdown-all-in-one
         github.vscode-github-actions
+        jjk.jjk
         # tryig my mac local ai instead
         # github.copilot
         continue.continue
@@ -137,9 +139,12 @@ in
       gemini-cli
       helix
       jujutsu
-      lmstudio
+      lazyjj
+      jjui
       process-compose
       zellij
       secretive
+    ]) ++ (with pkgs-llmstudio; [
+      lmstudio
     ]);
 }
