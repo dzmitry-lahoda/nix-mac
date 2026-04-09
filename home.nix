@@ -1,7 +1,7 @@
 {
   pkgs,
   pkgs-unstable,
-  pkgs-llmstudio,
+  pkgs-lmstudio,
   lib,
   ...
 }:
