@@ -124,7 +124,6 @@ in
       telegram-desktop
       # note - only for linux...
       # ledger-live-desktop
-      # trezor-suite
       android-tools
       gitui
       ripgrep
@@ -154,6 +153,7 @@ in
       pijul
       secretive
       whatsapp-for-mac
+      trezord
     ]) ++ (with pkgs-lmstudio; [
       lmstudio
     ]);
