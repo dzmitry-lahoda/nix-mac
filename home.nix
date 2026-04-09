@@ -102,26 +102,30 @@ in
         yzhang.markdown-all-in-one
         github.vscode-github-actions
         jjk.jjk
-        # tryig my mac local ai instead
-        # github.copilot
         continue.continue
         
         # not yet available
         # ckolkman.vscode-postgres
         # openai.chatgpt
-
       ];
     };
   };
 
   home.packages =
     (with pkgs; [
+      clang
       git
       git-lfs
       gh
       # must be be deeply integrated - seems needs cask
       # brave
       ghostty-bin
+      whatsapp-for-mac
+      signal-desktop
+      telegram-desktop
+      ledger-live-desktop
+      trezor-suite
+      android-tools
       gitui
       ripgrep
       bat
