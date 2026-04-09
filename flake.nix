@@ -53,6 +53,8 @@
               nix.enable = false;
               nixpkgs.config.allowUnfree = true;
               nixpkgs.overlays = [ rust-overlay.overlays.default ];
+              homebrew.enable = true;
+              homebrew.casks = [ "ledger-live" ];
               programs.bash.enable = true;
               environment.shells = [ pkgs.bashInteractive ];
               users.users.${username} = {
