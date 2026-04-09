@@ -124,7 +124,7 @@ in
       signal-desktop
       telegram-desktop
       # ledger-live-desktop
-      trezor-suite
+      # trezor-suite
       android-tools
       gitui
       ripgrep
