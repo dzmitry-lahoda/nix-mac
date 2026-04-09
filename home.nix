@@ -30,13 +30,14 @@ in
     schema: v1
 
     models:
-      - name: LM Studio Codestral 22B
-        provider: openai
-        model: codestral-22b
+      - name: LM Studio Qwen2.5 Coder 14B
+        provider: lmstudio
+        model: qwen/qwen2.5-coder-14b
         apiBase: http://localhost:1234/v1
-        apiKey: lm-studio
-        useLegacyCompletionsEndpoint: true
         roles:
+          - chat
+          - edit
+          - apply
           - autocomplete
         autocompleteOptions:
           disable: false
@@ -104,6 +105,7 @@ in
         # tryig my mac local ai instead
         # github.copilot
         continue.continue
+        
         # not yet available
         # ckolkman.vscode-postgres
         # openai.chatgpt
@@ -145,6 +147,7 @@ in
       jjui
       process-compose
       zellij
+      pijul
       secretive
     ]) ++ (with pkgs-lmstudio; [
       lmstudio
