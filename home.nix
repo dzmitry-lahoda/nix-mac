@@ -120,10 +120,10 @@ in
       # must be be deeply integrated - seems needs cask
       # brave
       ghostty-bin
-      # whatsapp-for-mac
+      whatsapp-for-mac
       signal-desktop
       telegram-desktop
-      ledger-live-desktop
+      # ledger-live-desktop
       trezor-suite
       android-tools
       gitui
