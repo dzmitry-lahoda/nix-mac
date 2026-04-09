@@ -154,6 +154,9 @@ in
       trezord
       signal-desktop
       telegram-desktop
+      swift
+      lean4
+      zig
     ]) ++ (with pkgs-lmstudio; [
       lmstudio
     ]);
