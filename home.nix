@@ -120,8 +120,6 @@ in
       # must be be deeply integrated - seems needs cask
       # brave
       ghostty-bin
-      signal-desktop
-      telegram-desktop
       # note - only for linux...
       # ledger-live-desktop
       android-tools
@@ -154,6 +152,8 @@ in
       secretive
       whatsapp-for-mac
       trezord
+      signal-desktop
+      telegram-desktop
     ]) ++ (with pkgs-lmstudio; [
       lmstudio
     ]);
