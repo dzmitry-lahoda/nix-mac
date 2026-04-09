@@ -120,9 +120,9 @@ in
       # must be be deeply integrated - seems needs cask
       # brave
       ghostty-bin
-      whatsapp-for-mac
       signal-desktop
       telegram-desktop
+      # note - only for linux...
       # ledger-live-desktop
       # trezor-suite
       android-tools
@@ -153,6 +153,7 @@ in
       zellij
       pijul
       secretive
+      whatsapp-for-mac
     ]) ++ (with pkgs-lmstudio; [
       lmstudio
     ]);
