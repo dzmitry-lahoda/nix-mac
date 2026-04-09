@@ -91,6 +91,8 @@ in
     profiles.default = {
       userSettings = {
         "git.openRepositoryInParentFolders" = "never";
+        "explorer.confirmDragAndDrop" = false;
+        "git.enabled" = false;
         "editor.inlineSuggest.enabled" = true;
       };
       extensions = with pkgs-unstable.vscode-extensions; [
