@@ -19,20 +19,15 @@ in
   home.file.".config/nixpkgs/config.nix".text = ''
     allowUnfree = true;
   '';
-  home.file.".config/jj/config.toml".text = ''
-    [user]
-    name = "${username}"
-    email = "${email}"
-  '';
   home.file.".continue/config.yaml".text = ''
     name: Local Continue
     version: 1.0.0
     schema: v1
 
     models:
-      - name: LM Studio Qwen2.5 Coder 14B
+      - name: LM Studio Qwen3 Coder 30B
         provider: lmstudio
-        model: qwen/qwen2.5-coder-14b
+        model: qwen/qwen3-coder-30b
         apiBase: http://localhost:1234/v1
         roles:
           - chat
@@ -73,6 +68,35 @@ in
       commit.gpgsign = true;
       tag.gpgSign = true;
     };
+  };
+  programs.gh = {
+    enable = true;
+    package = pkgs.gh;
+  };
+  programs.gitui = {
+    enable = true;
+    package = pkgs.gitui;
+  };
+  programs.jujutsu = {
+    enable = true;
+    package = pkgs-unstable.jujutsu;
+    settings = {
+      user = {
+        name = username;
+        email = email;
+      };
+      signing = {
+        backend = "ssh";
+        key = "${homeDir}/.ssh/id_ed25519_github.pub";
+        behavior = "own";
+        backends.ssh.program = "${pkgs.openssh}/bin/ssh-keygen";
+      };
+      git.sign-on-push = true;
+    };
+  };
+  programs.anki = {
+    enable = true;
+    package = pkgs.anki;
   };
 
   services.syncthing = {
@@ -116,14 +140,12 @@ in
       clang
       git
       git-lfs
-      gh
       # must be be deeply integrated - seems needs cask
       # brave
       ghostty-bin
       # note - only for linux...
       # ledger-live-desktop
       android-tools
-      gitui
       ripgrep
       bat
       bottom
@@ -143,7 +165,6 @@ in
       codex
       gemini-cli
       helix
-      jujutsu
       lazyjj
       jjui
       process-compose
