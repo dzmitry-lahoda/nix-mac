@@ -96,7 +96,7 @@ in
   };
   programs.anki = {
     enable = true;
-    package = pkgs.anki;
+    package = pkgs-unstable.anki;
   };
 
   services.syncthing = {

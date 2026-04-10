@@ -84,10 +84,10 @@
               text = ''
                 set -euo pipefail
 
-                if ! ${pkgs.git}/bin/git diff --quiet || ! ${pkgs.git}/bin/git diff --cached --quiet; then
-                  echo "Refusing to rebuild: commit or stash your changes first." >&2
-                  exit 1
-                fi
+                # if ! ${pkgs.git}/bin/git diff --quiet || ! ${pkgs.git}/bin/git diff --cached --quiet; then
+                #   echo "Refusing to rebuild: commit or stash your changes first." >&2
+                #   exit 1
+                # fi
 
                 echo "Rebuilding system configuration..."
 
