@@ -11,6 +11,7 @@ let
   homeDir = "/Users/${username}";
   host = "dzs-MacBook-Pro.local";
   email = "dzmitry@lahoda.pro";
+  rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
 in
 {
   home.username = username;
@@ -52,10 +53,52 @@ in
   programs.home-manager.enable = true;
   programs.bash = {
     enable = true;
+    enableCompletion = true;
+    historyControl = [
+      "ignoredups"
+      "erasedups"
+    ];
     sessionVariables = {
       SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
       PATH = "$HOME/.nix-profile/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH";
     };
+    initExtra = ''
+      __prompt_path() {
+        local path="''${PWD/#$HOME/~}"
+        local IFS='/'
+        local parts=()
+        local out=""
+        local i
+
+        read -r -a parts <<< "$path"
+        for i in "''${!parts[@]}"; do
+          local part="''${parts[$i]}"
+          if [ -z "$part" ]; then
+            continue
+          fi
+          if [ "$i" -lt "$((''${#parts[@]} - 1))" ] && [ "''${#part}" -gt 2 ]; then
+            out="$out/''${part:0:2}."
+          else
+            out="$out/$part"
+          fi
+        done
+
+        if [ -z "$out" ]; then
+          printf '/'
+        else
+          printf '%s' "$out"
+        fi
+      }
+
+      __prompt_jj_mark() {
+        jj root >/dev/null 2>&1 && printf ' [jj]'
+      }
+
+      PS1='$(__prompt_path)$(__prompt_jj_mark) \$ '
+
+      bind '"\e[A": history-search-backward'
+      bind '"\e[B": history-search-forward'
+    '';
   };
   programs.git = {
     enable = true;
@@ -88,7 +131,7 @@ in
       signing = {
         backend = "ssh";
         key = "${homeDir}/.ssh/id_ed25519_github.pub";
-        behavior = "own";
+        behavior = "drop"; # must be such to avoid loop sign by mac hardware key
         backends.ssh.program = "${pkgs.openssh}/bin/ssh-keygen";
       };
       git.sign-on-push = true;
@@ -97,6 +140,10 @@ in
   programs.anki = {
     enable = true;
     package = pkgs-unstable.anki;
+  };
+  programs.zed-editor = {
+    enable = true;
+    package = pkgs-unstable.zed-editor;
   };
 
   services.syncthing = {
@@ -117,17 +164,40 @@ in
       userSettings = {
         "git.openRepositoryInParentFolders" = "never";
         "explorer.confirmDragAndDrop" = false;
+        "jjk.pollSnapshotWorkingCopy" = true;
+        # disable if jjk installed - jj dislikes
         "git.enabled" = false;
         "editor.inlineSuggest.enabled" = true;
+        rust-analyzer = {
+          server = {
+            path = "${rust}/bin/rust-analyzer";
+            extraEnv = {
+              PATH = "${rust}/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin";
+            };
+          };
+          cargo = {
+            extraEnv = {
+              PATH = "${rust}/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin";
+            };
+          };
+          check = {
+            extraEnv = {
+              PATH = "${rust}/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin";
+            };
+          };
+        };
       };
       extensions = with pkgs-unstable.vscode-extensions; [
         rust-lang.rust-analyzer
         jnoortheen.nix-ide
         yzhang.markdown-all-in-one
         github.vscode-github-actions
-        jjk.jjk
         continue.continue
-        
+        # fucks all extension
+        #tamasfe.even-better-toml
+
+        jjk.jjk
+
         # not yet available
         # ckolkman.vscode-postgres
         # openai.chatgpt
@@ -140,6 +210,7 @@ in
       clang
       git
       git-lfs
+      act
       # must be be deeply integrated - seems needs cask
       # brave
       ghostty-bin
@@ -159,7 +230,7 @@ in
       delta
       duti
       openssh
-      (pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)
+      rust
     ])
     ++ (with pkgs-unstable; [
       codex
@@ -178,7 +249,8 @@ in
       swift
       lean4
       zig
-    ]) ++ (with pkgs-lmstudio; [
+    ])
+    ++ (with pkgs-lmstudio; [
       lmstudio
     ]);
 }

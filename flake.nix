@@ -111,9 +111,8 @@
               name = "check";
               text = ''
                 set -euo pipefail
-
                 ${pkgs.nix}/bin/nix flake check
-                ${pkgs.nix}/bin/nix build .#homeConfigurations.${username}.config.home.path
+                ${pkgs.nix}/bin/nix build .#homeConfigurations.${username}.config.home.path --no-link
               '';
             }
           }/bin/check";
