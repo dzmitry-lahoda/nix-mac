@@ -12,6 +12,9 @@ let
   host = "dzs-MacBook-Pro.local";
   email = "dzmitry@lahoda.pro";
   rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
+  rustExtraEnv = {
+    PATH = "${rust}/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin";
+  };
 in
 {
   home.username = username;
@@ -62,43 +65,53 @@ in
       SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
       PATH = "$HOME/.nix-profile/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH";
     };
-    initExtra = ''
-      __prompt_path() {
-        local path="''${PWD/#$HOME/~}"
-        local IFS='/'
-        local parts=()
-        local out=""
-        local i
+    # initExtra = ''
+    #   __prompt_path() {
+    #     local path="''${PWD/#$HOME/~}"
+    #     local IFS='/'
+    #     local parts=()
+    #     local out=""
+    #     local i
 
-        read -r -a parts <<< "$path"
-        for i in "''${!parts[@]}"; do
-          local part="''${parts[$i]}"
-          if [ -z "$part" ]; then
-            continue
-          fi
-          if [ "$i" -lt "$((''${#parts[@]} - 1))" ] && [ "''${#part}" -gt 2 ]; then
-            out="$out/''${part:0:2}."
-          else
-            out="$out/$part"
-          fi
-        done
+    #     read -r -a parts <<< "$path"
+    #     for i in "''${!parts[@]}"; do
+    #       local part="''${parts[$i]}"
+    #       if [ -z "$part" ]; then
+    #         continue
+    #       fi
+    #       if [ "$i" -lt "$((''${#parts[@]} - 1))" ] && [ "''${#part}" -gt 2 ]; then
+    #         out="$out/''${part:0:2}."
+    #       else
+    #         out="$out/$part"
+    #       fi
+    #     done
 
-        if [ -z "$out" ]; then
-          printf '/'
-        else
-          printf '%s' "$out"
-        fi
-      }
+    #     if [ -z "$out" ]; then
+    #       printf '/'
+    #     else
+    #       printf '%s' "$out"
+    #     fi
+    #   }
 
-      __prompt_jj_mark() {
-        jj root >/dev/null 2>&1 && printf ' [jj]'
-      }
+    #   __prompt_jj_mark() {
+    #     jj root >/dev/null 2>&1 && printf ' [jj]'
+    #   }
 
-      PS1='$(__prompt_path)$(__prompt_jj_mark) \$ '
+    #   PS1='$(__prompt_path)$(__prompt_jj_mark) \$ '
 
-      bind '"\e[A": history-search-backward'
-      bind '"\e[B": history-search-forward'
-    '';
+    #   bind '"\e[A": history-search-backward'
+    #   bind '"\e[B": history-search-forward'
+    # '';
+  };
+  programs.starship = {
+    enable = true;
+    enableBashIntegration = true;
+    package = pkgs.starship;
+    settings = {
+      add_newline = false;
+      format = "$username$hostname$localip$shlvl$singularity$kubernetes$directory$vcsh$fossil_branch$fossil_metrics$git_branch$git_commit$git_state$git_metrics$git_status$hg_branch$hg_state$pijul_channel$docker_context$package$c$cmake$cobol$daml$dart$deno$dotnet$elixir$elm$erlang$fennel$fortran$gleam$golang$guix_shell$haskell$haxe$helm$java$julia$kotlin$gradle$lua$nim$nodejs$ocaml$opa$perl$php$pulumi$purescript$python$quarto$raku$rlang$red$ruby$rust$scala$solidity$swift$terraform$typst$vlang$vagrant$zig$buf$nix_shell$conda$meson$spack$memory_usage$aws$gcloud$openstack$azure$nats$direnv$env_var$mise$crystal$custom$sudo$cmd_duration$jobs$battery$time$status$os$container$netns$shell$character";
+      package.disabled = false;
+    };
   };
   programs.git = {
     enable = true;
@@ -171,19 +184,13 @@ in
         rust-analyzer = {
           server = {
             path = "${rust}/bin/rust-analyzer";
-            extraEnv = {
-              PATH = "${rust}/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin";
-            };
+            extraEnv = rustExtraEnv;
           };
           cargo = {
-            extraEnv = {
-              PATH = "${rust}/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin";
-            };
+            extraEnv = rustExtraEnv;
           };
           check = {
-            extraEnv = {
-              PATH = "${rust}/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin";
-            };
+            extraEnv = rustExtraEnv;
           };
         };
       };
