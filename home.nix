@@ -104,10 +104,14 @@ in
     # '';
   };
   programs.starship = {
-    enable = true;
+    enable = true; # not sure if i need it a all - it also lack shortened path
     enableBashIntegration = true;
     package = pkgs.starship;
     settings = {
+      # directory = {
+      #     truncation_length = 2;
+      #     truncation_symbol = "…/";
+      # };
       add_newline = false;
       # assumes i do not need all infor on each line
       format = lib.concatStrings [
@@ -117,74 +121,9 @@ in
         "$singularity"
         "$kubernetes"
         "$directory"
-        "$vcsh"
-        "$fossil_branch"
-        "$fossil_metrics"
-        "$git_branch"
-        "$git_commit"
         "$git_state"
         "$git_metrics"
         "$git_status"
-        "$hg_branch"
-        "$hg_state"
-        "$pijul_channel"
-        "$docker_context"
-        "$package"
-        "$c"
-        "$cmake"
-        "$cobol"
-        "$daml"
-        "$dart"
-        "$dotnet"
-        "$elixir"
-        "$elm"
-        "$erlang"
-        "$fennel"
-        "$fortran"
-        "$gleam"
-        "$golang"
-        "$guix_shell"
-        "$haskell"
-        "$haxe"
-        "$helm"
-        "$java"
-        "$julia"
-        "$kotlin"
-        "$gradle"
-        "$lua"
-        "$nim"
-        "$nodejs"
-        "$ocaml"
-        "$opa"
-        "$pulumi"
-        "$purescript"
-        "$python"
-        "$quarto"
-        "$raku"
-        "$rlang"
-        "$red"
-        "$ruby"
-        "$rust"
-        "$scala"
-        "$solidity"
-        "$swift"
-        "$terraform"
-        "$typst"
-        "$vlang"
-        "$zig"
-        "$buf"
-        "$nix_shell"
-        "$meson"
-        "$spack"
-        "$aws"
-        "$gcloud"
-        "$openstack"
-        "$azure"
-        "$nats"
-        "$direnv"
-        "$env_var"
-        "$mise"
-        "$crystal"
         "$custom"
         "$sudo"
         "$jobs"
@@ -195,6 +134,13 @@ in
         "$shell"
         "$character"
       ];
+      custom.jj_bookmark = {
+        command = "${pkgs-unstable.jujutsu}/bin/jj log -r 'latest(ancestors(@) & bookmarks())' --no-graph -T 'bookmarks.join(\" \")'";
+        when = "test -n \"$(${pkgs-unstable.jujutsu}/bin/jj log -r 'latest(ancestors(@) & bookmarks())' --no-graph -T 'bookmarks.join(\" \")' 2>/dev/null)\"";
+        format = "[$symbol$output]($style) ";
+        symbol = "jj ";
+        style = "purple";
+      };
       package.disabled = false;
     };
   };
@@ -246,6 +192,7 @@ in
 
   services.syncthing = {
     enable = true;
+    settings.options.urAccepted = 1;
   };
 
   home.activation.setGhosttyDefault = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
@@ -326,6 +273,7 @@ in
     ])
     ++ (with pkgs-unstable; [
       codex
+      typst
       gemini-cli
       helix
       lazyjj
