@@ -1,8 +1,6 @@
 {
   pkgs,
   pkgs-unstable,
-  pkgs-lmstudio,
-  zed,
   lib,
   ...
 }:
@@ -12,42 +10,21 @@ let
   homeDir = "/Users/${username}";
   host = "dzs-MacBook-Pro.local";
   email = "dzmitry@lahoda.pro";
-  system = pkgs.stdenv.hostPlatform.system;
-  rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
-  rustExtraEnv = {
-    PATH = "${rust}/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin";
-  };
 in
 {
+  imports = [
+    ./modules/ai-tools.nix
+    ./modules/chats.nix
+    ./modules/command-line-productivity.nix
+    ./modules/ide-dev-tools.nix
+    ./modules/vscode.nix
+  ];
+
   home.username = username;
   home.homeDirectory = homeDir;
   home.stateVersion = "25.11";
   home.file.".config/nixpkgs/config.nix".text = ''
     allowUnfree = true;
-  '';
-  home.file.".continue/config.yaml".text = ''
-    name: Local Continue
-    version: 1.0.0
-    schema: v1
-
-    models:
-      - name: LM Studio Qwen3 Coder 30B
-        provider: lmstudio
-        model: qwen/qwen3-coder-30b
-        apiBase: http://localhost:1234/v1
-        roles:
-          - chat
-          - edit
-          - apply
-          - autocomplete
-        autocompleteOptions:
-          disable: false
-          debounceDelay: 250
-          maxPromptTokens: 1024
-          modelTimeout: 150
-          maxSuffixPercentage: 0.2
-          prefixPercentage: 0.3
-          onlyMyCode: true
   '';
 
   programs.ssh = {
@@ -106,52 +83,6 @@ in
     #   bind '"\e[B": history-search-forward'
     # '';
   };
-  programs.atuin = {
-    enable = true;
-    enableBashIntegration = true;
-    package = pkgs-unstable.atuin;
-  };
-  programs.starship = {
-    enable = true; # not sure if i need it a all - it also lack shortened path
-    enableBashIntegration = true;
-    package = pkgs.starship;
-    settings = {
-      # directory = {
-      #     truncation_length = 2;
-      #     truncation_symbol = "…/";
-      # };
-      add_newline = false;
-      # assumes i do not need all infor on each line
-      format = lib.concatStrings [
-        "$username"
-        "$hostname"
-        "$shlvl"
-        "$singularity"
-        "$kubernetes"
-        "$directory"
-        "$git_state"
-        "$git_metrics"
-        "$git_status"
-        "$custom"
-        "$sudo"
-        "$jobs"
-        "$status"
-        "$os"
-        "$container"
-        "$netns"
-        "$shell"
-        "$character"
-      ];
-      custom.jj_bookmark = {
-        command = "${pkgs-unstable.jujutsu}/bin/jj log -r 'latest(ancestors(@) & bookmarks())' --no-graph -T 'bookmarks.join(\" \")'";
-        when = "test -n \"$(${pkgs-unstable.jujutsu}/bin/jj log -r 'latest(ancestors(@) & bookmarks())' --no-graph -T 'bookmarks.join(\" \")' 2>/dev/null)\"";
-        format = "[$symbol$output]($style) ";
-        symbol = "jj ";
-        style = "purple";
-      };
-      package.disabled = false;
-    };
-  };
   programs.git = {
     enable = true;
     settings = {
@@ -193,10 +124,6 @@ in
     enable = true;
     package = pkgs-unstable.anki;
   };
-  programs.zed-editor = {
-    enable = true;
-    package = zed.packages.${system}.default;
-  };
 
   services.syncthing = {
     enable = true;
@@ -210,96 +137,18 @@ in
     fi
   '';
 
-  programs.vscode = {
-    enable = true;
-    package = pkgs-unstable.vscode;
-    profiles.default = {
-      userSettings = {
-        "git.openRepositoryInParentFolders" = "never";
-        "explorer.confirmDragAndDrop" = false;
-        "jjk.pollSnapshotWorkingCopy" = true;
-        # disable if jjk installed - jj dislikes
-        "git.enabled" = false;
-        "editor.inlineSuggest.enabled" = true;
-        rust-analyzer = {
-          server = {
-            path = "${rust}/bin/rust-analyzer";
-            extraEnv = rustExtraEnv;
-          };
-          cargo = {
-            extraEnv = rustExtraEnv;
-          };
-          check = {
-            extraEnv = rustExtraEnv;
-          };
-        };
-      };
-      extensions = with pkgs-unstable.vscode-extensions; [
-        rust-lang.rust-analyzer
-        jnoortheen.nix-ide
-        yzhang.markdown-all-in-one
-        github.vscode-github-actions
-        continue.continue
-        # fucks all extension
-        #tamasfe.even-better-toml
-
-        jjk.jjk
-
-        # not yet available
-        # ckolkman.vscode-postgres
-        # openai.chatgpt
-      ];
-    };
-  };
-
   home.packages =
     (with pkgs; [
-      # clang
-      llvmPackages.clang-unwrapped # rust expects not nix - but full clang with cross compile and debug
-      git
-      git-lfs
-      act
       # must be be deeply integrated - seems needs cask
       # brave
       ghostty-bin
       # note - only for linux...
       # ledger-live-desktop
-      android-tools
-      ripgrep
-      bat
-      bottom
-      skim
-      eza
-      fd
-      zoxide
-      procs
-      dust
-      sd
-      delta
       duti
       openssh
-      rust
     ])
     ++ (with pkgs-unstable; [
-      codex
-      typst
-      gemini-cli
-      helix
-      lazyjj
-      jjui
-      process-compose
-      zellij
-      pijul
       secretive
-      whatsapp-for-mac
       trezord
-      signal-desktop
-      telegram-desktop
-      swift
-      lean4
-      zig
-    ])
-    ++ (with pkgs-lmstudio; [
-      lmstudio
     ]);
 }
