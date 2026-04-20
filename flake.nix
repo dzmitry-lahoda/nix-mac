@@ -5,6 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-lmstudio.url = "github:NixOS/nixpkgs/2ff9c783ebda94cbcb09defcce64a222deb725cd";
+    zed.url = "github:zed-industries/zed";
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -20,6 +21,7 @@
       nixpkgs,
       nixpkgs-unstable,
       nixpkgs-lmstudio,
+      zed,
       rust-overlay,
       home-manager,
       darwin,
@@ -68,6 +70,7 @@
               home-manager.extraSpecialArgs = {
                 inherit pkgs-unstable;
                 inherit pkgs-lmstudio;
+                inherit zed;
               };
               home-manager.users.${username} = import ./home.nix;
             }
@@ -124,10 +127,22 @@
         extraSpecialArgs = {
           inherit pkgs-unstable;
           inherit pkgs-lmstudio;
+          inherit zed;
         };
         modules = [ ./home.nix ];
       };
 
       formatter.${system} = pkgs.nixfmt-rfc-style;
     };
+
+  nixConfig = {
+    extra-substituters = [
+      "https://zed.cachix.org"
+      "https://cache.garnix.io"
+    ];
+    extra-trusted-public-keys = [
+      "zed.cachix.org-1:/pHQ6dpMsAZk2DiP4WCL0p9YDNKWj2Q5FL20bNmw1cU="
+      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+    ];
+  };
 }

@@ -2,6 +2,7 @@
   pkgs,
   pkgs-unstable,
   pkgs-lmstudio,
+  zed,
   lib,
   ...
 }:
@@ -11,6 +12,7 @@ let
   homeDir = "/Users/${username}";
   host = "dzs-MacBook-Pro.local";
   email = "dzmitry@lahoda.pro";
+  system = pkgs.stdenv.hostPlatform.system;
   rust = pkgs.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
   rustExtraEnv = {
     PATH = "${rust}/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin";
@@ -64,6 +66,7 @@ in
     sessionVariables = {
       SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
       PATH = "$HOME/.nix-profile/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH";
+      PROTOC = "${pkgs.protobuf}/bin/protoc";
     };
     # initExtra = ''
     #   __prompt_path() {
@@ -102,6 +105,11 @@ in
     #   bind '"\e[A": history-search-backward'
     #   bind '"\e[B": history-search-forward'
     # '';
+  };
+  programs.atuin = {
+    enable = true;
+    enableBashIntegration = true;
+    package = pkgs-unstable.atuin;
   };
   programs.starship = {
     enable = true; # not sure if i need it a all - it also lack shortened path
@@ -187,7 +195,7 @@ in
   };
   programs.zed-editor = {
     enable = true;
-    package = pkgs-unstable.zed-editor;
+    package = zed.packages.${system}.default;
   };
 
   services.syncthing = {
@@ -246,7 +254,8 @@ in
 
   home.packages =
     (with pkgs; [
-      clang
+      # clang
+      llvmPackages.clang-unwrapped # rust expects not nix - but full clang with cross compile and debug
       git
       git-lfs
       act
