@@ -3,13 +3,15 @@
 let
   clang = pkgs.llvmPackages.clang-unwrapped;
   bintools = pkgs.bintools-unwrapped;
+  libiconv = pkgs.libiconv;
 in
 {
-  inherit clang bintools;
+  inherit clang bintools libiconv;
 
   packages = [
     bintools
     clang
+    libiconv
   ];
 
   env = {

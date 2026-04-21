@@ -16,9 +16,9 @@ in
     schema: v1
 
     models:
-      - name: LM Studio Qwen3 Coder 30B
+      - name: lmstudio hesamation/Qwen3.6-35B-A3B-Claude-4.6-Opus-Reasoning-Distilled
         provider: lmstudio
-        model: qwen/qwen3-coder-30b
+        model: hesamation/Qwen3.6-35B-A3B-Claude-4.6-Opus-Reasoning-Distilled
         apiBase: http://localhost:1234/v1
         roles:
           - chat
@@ -34,6 +34,22 @@ in
           prefixPercentage: 0.3
           onlyMyCode: true
   '';
+
+  home.file.".gemini/settings.json".text =
+    builtins.toJSON {
+      ide = {
+        hasSeenNudge = true;
+        enabled = true;
+      };
+      model = {
+        name = "gemini-3.1-pro-preview";
+      };
+      security = {
+        auth = {
+          selectedType = "oauth-personal";
+        };
+      };
+    };
 
   home.packages = [
     codex-cli-nix.packages.${system}.codex

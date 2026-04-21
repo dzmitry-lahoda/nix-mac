@@ -14,6 +14,9 @@ in
     package = pkgs-unstable.vscode;
     profiles.default = {
       userSettings = {
+        "update.mode" = "none";
+        "extensions.autoCheckUpdates" = false;
+        "extensions.autoUpdate" = false;
         "git.openRepositoryInParentFolders" = "never";
         "explorer.confirmDragAndDrop" = false;
         "jjk.pollSnapshotWorkingCopy" = true;

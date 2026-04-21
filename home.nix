@@ -17,6 +17,7 @@ in
     ./modules/chats.nix
     ./modules/command-line-productivity.nix
     ./modules/ide-dev-tools.nix
+    ./modules/media.nix
     ./modules/vscode.nix
     ./modules/zed-editor.nix
   ];
