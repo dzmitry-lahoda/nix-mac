@@ -5,11 +5,8 @@
 }:
 
 let
-  username = "dz";
   rust = pkgs.rust-bin.fromRustupToolchainFile ../rust-toolchain.toml;
-  rustExtraEnv = {
-    PATH = "${rust}/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin";
-  };
+  rustCToolchain = import ./rust-c-toolchain.nix { inherit pkgs; };
 in
 {
   programs.vscode = {
@@ -26,13 +23,13 @@ in
         rust-analyzer = {
           server = {
             path = "${rust}/bin/rust-analyzer";
-            extraEnv = rustExtraEnv;
+            extraEnv = rustCToolchain.env;
           };
           cargo = {
-            extraEnv = rustExtraEnv;
+            extraEnv = rustCToolchain.env;
           };
           check = {
-            extraEnv = rustExtraEnv;
+            extraEnv = rustCToolchain.env;
           };
         };
       };

@@ -1,24 +1,17 @@
 {
   pkgs,
   pkgs-unstable,
-  zed,
   ...
 }:
 
 let
-  system = pkgs.stdenv.hostPlatform.system;
   rust = pkgs.rust-bin.fromRustupToolchainFile ../rust-toolchain.toml;
+  rustCToolchain = import ./rust-c-toolchain.nix { inherit pkgs; };
 in
 {
-  programs.zed-editor = {
-    enable = true;
-    package = zed.packages.${system}.default;
-  };
-
   home.packages =
-    (with pkgs; [
-      # clang
-      llvmPackages.clang-unwrapped # rust expects not nix - but full clang with cross compile and debug
+    rustCToolchain.packages
+    ++ (with pkgs; [
       android-tools
       git
       git-lfs

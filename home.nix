@@ -18,6 +18,7 @@ in
     ./modules/command-line-productivity.nix
     ./modules/ide-dev-tools.nix
     ./modules/vscode.nix
+    ./modules/zed-editor.nix
   ];
 
   home.username = username;
