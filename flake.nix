@@ -70,6 +70,16 @@
                 home = "/Users/${username}";
                 shell = pkgs.bashInteractive;
               };
+              system.activationScripts.installRosetta.text = pkgs.lib.optionalString
+                pkgs.stdenv.hostPlatform.isAarch64
+                ''
+                  if /usr/sbin/pkgutil --pkg-info com.apple.pkg.RosettaUpdateAuto >/dev/null 2>&1; then
+                    echo "Rosetta 2 already installed"
+                  else
+                    echo "Installing Rosetta 2..."
+                    /usr/sbin/softwareupdate --install-rosetta --agree-to-license
+                  fi
+                '';
               system.stateVersion = 2;
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
