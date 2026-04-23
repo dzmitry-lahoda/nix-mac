@@ -18,7 +18,6 @@ in
       act
       openssh
       rust
-      tart
     ])
     ++ (with pkgs-unstable; [
       helix

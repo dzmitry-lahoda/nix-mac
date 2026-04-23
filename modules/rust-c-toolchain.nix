@@ -2,7 +2,7 @@
 
 let
   clang = pkgs.llvmPackages.clang-unwrapped;
-  bintools = pkgs.bintools-unwrapped;
+  bintools = pkgs.llvmPackages.bintools-unwrapped;
   libiconv = pkgs.libiconv;
 in
 {
@@ -12,6 +12,9 @@ in
     bintools
     clang
     libiconv
+    pkgs.gnumake
+    pkgs.cmake
+    pkgs.pkg-config
   ];
 
   env = {
