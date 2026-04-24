@@ -1,0 +1,23 @@
+[package]
+name = "crates"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# not really using, just for testing compile toolchain
+# llvm-sys = "*"
+llvmenv = "*"
+objc2-core-foundation = "*"
+security-framework = "*"
+system-configuration = "*"
+objc2 = "*"
+dispatch2 = "*"
+objc2-app-kit = "*"
+objc2-foundation = "*"
+objc2-core-text = "*"
+objc2-core-graphics = "*"
+objc2-quartz-core = "*"
+objc2-metal = "*"
+block2 = "*"
+objc2-metal-kit = "*"
+lzma-sys = "*"
