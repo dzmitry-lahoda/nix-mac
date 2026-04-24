@@ -5,8 +5,8 @@
 }:
 
 let
-  rust = pkgs.rust-bin.fromRustupToolchainFile ../rust-toolchain.toml;
-  rustCToolchain = import ./rust-c-toolchain.nix { inherit pkgs; };
+  rust = pkgs.rust-bin.fromRustupToolchainFile ../../rust-toolchain.toml;
+  rustCToolchain = import ./native-toolchain.nix { inherit pkgs; };
 in
 {
   home.packages =
@@ -18,6 +18,7 @@ in
       act
       openssh
       rust
+      gita
     ])
     ++ (with pkgs-unstable; [
       helix
