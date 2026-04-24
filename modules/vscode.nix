@@ -7,6 +7,11 @@
 let
   rust = pkgs.rust-bin.fromRustupToolchainFile ../rust-toolchain.toml;
   rustCToolchain = import ./rust-c-toolchain.nix { inherit pkgs; };
+  rustAnalyzerEnv = rustCToolchain.env // {
+    PATH = "${rust}/bin:$PATH";
+    CARGO = "${rust}/bin/cargo";
+    RUSTC = "${rust}/bin/rustc";
+  };
 in
 {
   programs.vscode = {
@@ -26,13 +31,13 @@ in
         rust-analyzer = {
           server = {
             path = "${rust}/bin/rust-analyzer";
-            extraEnv = rustCToolchain.env;
+            extraEnv = rustAnalyzerEnv;
           };
           cargo = {
-            extraEnv = rustCToolchain.env;
+            extraEnv = rustAnalyzerEnv;
           };
           check = {
-            extraEnv = rustCToolchain.env;
+            extraEnv = rustAnalyzerEnv;
           };
         };
       };

@@ -1,2 +1,5 @@
 result
 .jj
+# rust
+target/
+.cargo

@@ -10,6 +10,7 @@ let
   homeDir = "/Users/${username}";
   host = "dzs-MacBook-Pro.local";
   email = "dzmitry@lahoda.pro";
+  rustCToolchain = import ./modules/rust-c-toolchain.nix { inherit pkgs; };
 in
 {
   imports = [
@@ -46,8 +47,10 @@ in
     sessionVariables = {
       SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
       PATH = "$HOME/.nix-profile/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH";
-      PROTOC = "${pkgs.protobuf}/bin/protoc";
-    };
+      PROTOC = "${pkgs.protobuf}/bin/protoc";      
+
+
+    } // rustCToolchain.env;
     # initExtra = ''
     #   __prompt_path() {
     #     local path="''${PWD/#$HOME/~}"
