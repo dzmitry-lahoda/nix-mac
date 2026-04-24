@@ -10,18 +10,18 @@ let
   homeDir = "/Users/${username}";
   host = "dzs-MacBook-Pro.local";
   email = "dzmitry@lahoda.pro";
-  rustCToolchain = import ./modules/rust-c-toolchain.nix { inherit pkgs; };
+  rustCToolchain = import ./modules/dev/native-toolchain.nix { inherit pkgs; };
 in
 {
   imports = [
     ./modules/ai.nix
     ./modules/chats.nix
-    ./modules/command-line-productivity.nix
-    ./modules/ide-dev-tools.nix
+    ./modules/cli.nix
+    ./modules/dev/tools.nix
     ./modules/media.nix
     ./modules/vm.nix
-    ./modules/vscode.nix
-    ./modules/zed-editor.nix
+    ./modules/dev/vscode.nix
+    ./modules/dev/zed-editor.nix
   ];
 
   home.username = username;
@@ -47,9 +47,7 @@ in
     sessionVariables = {
       SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
       PATH = "$HOME/.nix-profile/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH";
-      PROTOC = "${pkgs.protobuf}/bin/protoc";      
-
-
+      PROTOC = "${pkgs.protobuf}/bin/protoc";
     } // rustCToolchain.env;
     # initExtra = ''
     #   __prompt_path() {

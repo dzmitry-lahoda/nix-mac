@@ -4,16 +4,18 @@ let
   # Use wrapped toolchain binaries on Darwin so the SDK/sysroot and linker
   # search paths are injected automatically.
   clang = pkgs.llvmPackages.clang;
+  clangUnwrapped = pkgs.llvmPackages.clang-unwrapped;
   bintools = pkgs.llvmPackages.bintools;
   libiconv = pkgs.libiconv;
-  appleSdk = pkgs.apple-sdk_14;
+  appleSdk = pkgs.apple-sdk_26;
 in
 {
-  inherit clang bintools libiconv appleSdk;
+  inherit clang clangUnwrapped bintools libiconv appleSdk;
 
   packages = [
     clang
-    libiconv
+    pkgs.darwin.libiconv
+    pkgs.libllvm
     pkgs.gnumake
     pkgs.cmake
     pkgs.pkg-config
@@ -32,5 +34,12 @@ in
     # Rust probes these directly on Darwin before invoking the wrapper.
     DEVELOPER_DIR = "${appleSdk}";
     SDKROOT = "${appleSdk}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
+  };
+  unwrappedEnv = {
+    CC = "${clangUnwrapped}/bin/clang";
+    # AR = "${clangUnwrapped}/bin/llvm-ar";
+    CXX = "${clangUnwrapped}/bin/clang++";
+    # CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER = "${clangUnwrapped}/bin/clang";
+    # PATH = "${clangUnwrapped}/bin:$PATH";
   };
 }

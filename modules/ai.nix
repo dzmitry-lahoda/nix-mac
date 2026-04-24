@@ -13,7 +13,7 @@ let
   yamlFormat = pkgs.formats.yaml { };
   codexConfig = {
     personality = "pragmatic";
-    model = "gpt-5.4";
+    model = "gpt-5.5";
 
     projects = {
       "/Users/dz/overlay/github.com/dzmitry-lahoda/nix-mac".trust_level = "trusted";
@@ -83,7 +83,7 @@ in
         enabled = true;
       };
       model = {
-        name = "gemini-3.1-pro-preview";
+        name = "gemini-3.1-pro";
       };
       security = {
         auth = {

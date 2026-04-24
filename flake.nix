@@ -151,6 +151,10 @@
         modules = [ ./home.nix ];
       };
 
+      packages.${system} = {
+        check = pkgs.libllvm;
+      };
+
       formatter.${system} = pkgs.nixfmt-rfc-style;
     };
 

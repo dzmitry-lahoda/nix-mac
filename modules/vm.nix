@@ -1,9 +1,9 @@
-{ pkgs, ... }:
+{ pkgs-unstable, ... }:
 
 {
-  home.packages = with pkgs; [
+  home.packages = with pkgs-unstable; [
     tart
     utm
-    whisky
-  ];
+    # whisky - depercated and seems cannot do steam well
+    ];
 }
