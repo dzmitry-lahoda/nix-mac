@@ -1,9 +1,9 @@
-
-
-1. install Nix and Brave browser manualy.
-2. nix the rest
-3. use Secure Enclave for auth, VS Code works well
-4. i use bash, no apply manually installed dev tools2
-   - bash is good, zsh better; count of bash >> count of zsh. sum(bash) > sum(zsh)
-5. waiting for asahi (to receive crypro donations like redox did)
-6. local lmstudio mlx ai 30B(14gb RAM) along with gemini/codex installs (fuck antropic lock in).
+1. Install Nix and the Brave browser manually.
+2. Use Nix for the rest.
+3. Use Secure Enclave for auth; VS Code works well.
+4. I use Bash.
+   - Bash is good, zsh may be better, but Bash is still more common.
+5. No Apple build tools, Xcode Select, or similar setup; Nix and only Nix dev tools.
+6. Waiting for Asahi, especially to receive crypto donations the way Redox did.
+7. Local LM Studio MLX Qwen AI 35B (17 GB RAM), along with Gemini/Codex installs (fuck Anthropic lock-in).
+8. I removed everything except system apps from the panel; I use Apple as close to Linux as possible.
