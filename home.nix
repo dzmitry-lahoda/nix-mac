@@ -14,7 +14,7 @@ let
 in
 {
   imports = [
-    ./modules/ai.nix
+    ./modules/ai
     ./modules/chats.nix
     ./modules/cli.nix
     ./modules/dev/tools.nix

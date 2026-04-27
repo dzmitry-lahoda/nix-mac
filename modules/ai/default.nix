@@ -2,7 +2,6 @@
   lib,
   pkgs,
   pkgs-unstable,
-  pkgs-lmstudio,
   codex-cli-nix,
   ...
 }:
@@ -11,6 +10,16 @@ let
   system = pkgs.stdenv.hostPlatform.system;
   tomlFormat = pkgs.formats.toml { };
   yamlFormat = pkgs.formats.yaml { };
+  ollamaHost = "127.0.0.1:11434";
+  ollamaApiBase = "http://${ollamaHost}";
+  ollamaModel = "mlx-community-gemma-4-26b-a4b-it-4bit";
+  ollamaService = pkgs.callPackage ./ollamaService.nix {
+    ollama = pkgs-unstable.ollama;
+    gemmaModel = pkgs.callPackage ./models/mlx-community-gemma-4-26b-a4b-it-4bit-mlx/weights.nix { };
+    modelfile = pkgs.callPackage ./models/mlx-community-gemma-4-26b-a4b-it-4bit-mlx/modelfile.nix {
+      gemmaModel = pkgs.callPackage ./models/mlx-community-gemma-4-26b-a4b-it-4bit-mlx/weights.nix { };
+    };
+  };
   codexConfig = {
     personality = "pragmatic";
     model = "gpt-5.5";
@@ -34,10 +43,10 @@ let
       "approve";
   };
   shellGptConfig = {
-    OPENAI_API_KEY = "lm-studio";
-    API_BASE_URL = "http://127.0.0.1:1234/v1";
-    DEFAULT_MODEL = "openai/qwen/qwen3.6-27b";
-    USE_LITELLM = true;
+    OPENAI_API_KEY = "ollama";
+    API_BASE_URL = "${ollamaApiBase}/v1";
+    DEFAULT_MODEL = ollamaModel;
+    USE_LITELLM = false;
     OPENAI_USE_FUNCTIONS = false;
   };
   continueConfig = {
@@ -46,21 +55,32 @@ let
     schema = "v1";
     models = [
       {
-        name = "lmstudio qwen/qwen3.6-27b";
-        provider = "lmstudio";
-        model = "qwen/qwen3.6-27b";
-        apiBase = "http://localhost:1234/v1";
+        name = "Ollama Gemma 4 26B A4B 4bit MLX";
+        provider = "ollama";
+        model = ollamaModel;
+        apiBase = ollamaApiBase;
         roles = [
           "chat"
           "edit"
           "apply"
           "autocomplete"
         ];
+        requestOptions = {
+          extraBodyProperties = {
+            think = false;
+          };
+        };
+        defaultCompletionOptions = {
+          contextLength = 16384;
+          maxTokens = 512;
+          temperature = 0.2;
+          topP = 0.95;
+        };
         autocompleteOptions = {
           disable = false;
           debounceDelay = 250;
-          maxPromptTokens = 1024;
-          modelTimeout = 150;
+          maxPromptTokens = 2048;
+          modelTimeout = 500;
           maxSuffixPercentage = 0.2;
           prefixPercentage = 0.3;
           onlyMyCode = false;
@@ -74,30 +94,29 @@ in
 
   home.file.".config/shell_gpt/.sgptrc".text = lib.generators.toKeyValue { } shellGptConfig;
 
-  home.file.".continue/config.yaml".source = yamlFormat.generate "continue-config.yaml" continueConfig;
+  home.file.".continue/config.yaml".source =
+    yamlFormat.generate "continue-config.yaml" continueConfig;
 
-  home.file.".gemini/settings.json".text =
-    builtins.toJSON {
-      ide = {
-        hasSeenNudge = true;
-        enabled = true;
-      };
-      model = {
-        name = "gemini-3.1-pro";
-      };
-      security = {
-        auth = {
-          selectedType = "oauth-personal";
-        }; 
+  home.file.".gemini/settings.json".text = builtins.toJSON {
+    ide = {
+      hasSeenNudge = true;
+      enabled = true;
+    };
+    model = {
+      name = "gemini-3.1-preview";
+    };
+    security = {
+      auth = {
+        selectedType = "oauth-personal";
       };
     };
+  };
 
   home.packages = [
     codex-cli-nix.packages.${system}.codex
     pkgs-unstable.gemini-cli
+    ollamaService
+    pkgs-unstable.ollama
     pkgs-unstable.shell-gpt
-  ]
-  ++ (with pkgs-lmstudio; [
-    lmstudio
-  ]);
+  ];
 }

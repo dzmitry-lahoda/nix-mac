@@ -4,7 +4,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-lmstudio.url = "github:NixOS/nixpkgs/2ff9c783ebda94cbcb09defcce64a222deb725cd";
     zed.url = "github:zed-industries/zed";
     zed.inputs.nixpkgs.follows = "nixpkgs";
     codex-cli-nix = {
@@ -25,7 +24,6 @@
     {
       nixpkgs,
       nixpkgs-unstable,
-      nixpkgs-lmstudio,
       zed,
       codex-cli-nix,
       rust-overlay,
@@ -44,11 +42,20 @@
       pkgs-unstable = import nixpkgs-unstable {
         inherit system;
         config.allowUnfree = true;
+        config.allowUnsupportedSystem = true; # some cuda modules loaded by AI, not used
         overlays = [ rust-overlay.overlays.default ];
       };
-      pkgs-lmstudio = import nixpkgs-lmstudio {
-        inherit system;
-        config.allowUnfree = true;
+
+      gemmaModel =
+        pkgs.callPackage ./modules/ai/models/mlx-community-gemma-4-26b-a4b-it-4bit-mlx/weights.nix
+          { };
+      gemmaModelfile =
+        pkgs.callPackage ./modules/ai/models/mlx-community-gemma-4-26b-a4b-it-4bit-mlx/modelfile.nix
+          { inherit gemmaModel; };
+      ollamaService = pkgs.callPackage ./modules/ai/ollamaService.nix {
+        ollama = pkgs-unstable.ollama;
+        inherit gemmaModel;
+        modelfile = gemmaModelfile;
       };
     in
     {
@@ -86,7 +93,6 @@
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
                 inherit pkgs-unstable;
-                inherit pkgs-lmstudio;
                 inherit zed;
                 inherit codex-cli-nix;
               };
@@ -144,7 +150,6 @@
         pkgs = pkgs;
         extraSpecialArgs = {
           inherit pkgs-unstable;
-          inherit pkgs-lmstudio;
           inherit zed;
           inherit codex-cli-nix;
         };
@@ -152,6 +157,7 @@
       };
 
       packages.${system} = {
+        inherit ollamaService;
         check = pkgs.libllvm;
       };
 
