@@ -8,11 +8,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1777054843,
-        "narHash": "sha256-aiuiKK6xJu5inj/RTmSl9S3jDC6RzNsKfNJ700MRPNY=",
+        "lastModified": 1779246963,
+        "narHash": "sha256-6mEF9tTbrvCN9DLWVPKm79yrGwo00dn4Ia3y6pz05Sc=",
         "owner": "sadjow",
         "repo": "codex-cli-nix",
-        "rev": "fc382bef14dcb9873769bdcb4d3b943ef2606489",
+        "rev": "b1b44fd7da742655b37e949d3cb4fe329067e271",
         "type": "github"
       },
       "original": {

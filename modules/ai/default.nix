@@ -24,6 +24,12 @@ let
     personality = "pragmatic";
     model = "gpt-5.5";
 
+    agents = {
+      max_threads = 6;
+      max_depth = 2;
+      job_max_runtime_seconds = 1800;
+    };
+
     projects = {
       "/Users/dz/overlay/github.com/dzmitry-lahoda/nix-mac".trust_level = "trusted";
       "/Users/dz/overlay/github.com/n1xyz/proton".trust_level = "trusted";

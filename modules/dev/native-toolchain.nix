@@ -7,10 +7,16 @@ let
   clangUnwrapped = pkgs.llvmPackages.clang-unwrapped;
   bintools = pkgs.llvmPackages.bintools;
   libiconv = pkgs.libiconv;
-  appleSdk = pkgs.apple-sdk_26;
+  appleSdk = pkgs.apple-sdk_14;
 in
-{
-  inherit clang clangUnwrapped bintools libiconv appleSdk;
+rec {
+  inherit
+    clang
+    clangUnwrapped
+    bintools
+    libiconv
+    appleSdk
+    ;
 
   packages = [
     clang
@@ -26,8 +32,8 @@ in
     # The wrapped clang toolchain already exposes binutils; avoid adding
     # standalone bintools to home.packages because both provide `strip`.
     AR = "${clang}/bin/ar";
-    CXX="${clang}/bin/clang";
-    CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER="${clang}/bin/clang";
+    CXX = "${clang}/bin/clang";
+    CARGO_TARGET_AARCH64_APPLE_DARWIN_LINKER = "${clang}/bin/clang";
     # `clang` still needs an explicit library search path for Nix-provided
     # Darwin libs like libiconv when Cargo links binaries directly.
     LIBRARY_PATH = "${libiconv}/lib";
