@@ -20,7 +20,7 @@ let
       # ipython
       # jupyter
       # jupyterlab
-      # langchain      
+      # langchain
       # matplotlib
       # networkx
       # numpy
@@ -31,7 +31,7 @@ let
       # pdf2image
       # pdfminer-six
       # pdfplumber
-      # pillow      
+      # pillow
       # plotly
       # polars
       # pyarrow
@@ -76,16 +76,15 @@ in
       helix
       jjui
       lazyjj
-      lean4      
-      mermaid-cli      
+      lean4
+      mermaid-cli
       openai-whisper
       poppler
       pijul
       process-compose
-      python      
+      python
       # swift
-      tesseract      
-      typst
+      tesseract
       uv
       visidata
       zellij

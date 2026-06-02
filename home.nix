@@ -17,6 +17,7 @@ in
     ./modules/ai
     ./modules/chats.nix
     ./modules/cli.nix
+    ./modules/docs.nix
     ./modules/dev/tools.nix
     ./modules/media.nix
     ./modules/vm.nix
