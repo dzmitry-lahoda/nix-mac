@@ -49,9 +49,14 @@ in
         continue.continue
         # fucks all extension
         #tamasfe.even-better-toml
+        github.vscode-pull-request-github
 
         jjk.jjk
-
+ms-python.python
+# ms-ossdata.vscode-pgsql
+	tamasfe.even-better-toml
+  	leanprover.lean4
+    ziglang.vscode-zig
         # not yet available
         # ckolkman.vscode-postgres
         # openai.chatgpt
