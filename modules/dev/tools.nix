@@ -81,6 +81,7 @@ in
       openai-whisper
       poppler
       pijul
+      sqlx-cli
       process-compose
       python
       # swift

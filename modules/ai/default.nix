@@ -3,6 +3,14 @@
   pkgs,
   pkgs-unstable,
   codex-cli-nix,
+  hermes-agent,
+  antigravity-nix,
+  localAi ? {
+    defaultLocal = "fortytwo-network-strand-rust-coder-14b-v1";
+    ollamaHost = "127.0.0.1:11434";
+    ollamaApiBase = "http://127.0.0.1:11434";
+    ollamaModel = "fortytwo-network-strand-rust-coder-14b-v1:latest";
+  },
   ...
 }:
 
@@ -10,23 +18,63 @@ let
   system = pkgs.stdenv.hostPlatform.system;
   tomlFormat = pkgs.formats.toml { };
   yamlFormat = pkgs.formats.yaml { };
-  ollamaHost = "127.0.0.1:11434";
-  ollamaApiBase = "http://${ollamaHost}";
-  ollamaModel = "mlx-community-gemma-4-26b-a4b-it-4bit";
+  ollamaApiBase = localAi.ollamaApiBase;
+  ollamaModel = localAi.ollamaModel;
+  defaultLocal = localAi.defaultLocal;
+  geminiModel = "gemini-3.1-pro";
+  strandRustCoderModel =
+    pkgs.callPackage ./models/fortytwo-network-strand-rust-coder-14b-v1/weights.nix
+      { };
+  strandRustCoderModelfile =
+    pkgs.callPackage ./models/fortytwo-network-strand-rust-coder-14b-v1/modelfile.nix
+      {
+        inherit strandRustCoderModel;
+      };
   ollamaService = pkgs.callPackage ./ollamaService.nix {
     ollama = pkgs-unstable.ollama;
-    gemmaModel = pkgs.callPackage ./models/mlx-community-gemma-4-26b-a4b-it-4bit-mlx/weights.nix { };
-    modelfile = pkgs.callPackage ./models/mlx-community-gemma-4-26b-a4b-it-4bit-mlx/modelfile.nix {
-      gemmaModel = pkgs.callPackage ./models/mlx-community-gemma-4-26b-a4b-it-4bit-mlx/weights.nix { };
-    };
+    modelName = ollamaModel;
+  };
+  ollamaPreload = pkgs.writeShellApplication {
+    name = "ollamaPreload";
+    runtimeInputs = [
+      pkgs.curl
+      pkgs-unstable.ollama
+    ];
+    text = ''
+      set -euo pipefail
+
+      model_name="''${OLLAMA_MODEL_NAME:-${ollamaModel}}"
+      ollama_host="''${OLLAMA_HOST:-${localAi.ollamaHost}}"
+      ollama_base_url="http://$ollama_host"
+
+      retries=60
+      while [ "$retries" -gt 0 ]; do
+        if curl --fail --silent --show-error "$ollama_base_url/api/version" >/dev/null; then
+          break
+        fi
+        retries=$((retries - 1))
+        sleep 2
+      done
+
+      curl --fail --silent --show-error "$ollama_base_url/api/version" >/dev/null
+
+      if ! OLLAMA_HOST="$ollama_host" ollama show "$model_name" >/dev/null 2>&1; then
+        OLLAMA_HOST="$ollama_host" ollama create "$model_name" --file ${strandRustCoderModelfile}
+      fi
+
+      curl --fail --silent --show-error "$ollama_base_url/api/generate" \
+        --header "Content-Type: application/json" \
+        --data '{"model":"'"$model_name"'","prompt":"","stream":false,"keep_alive":"-1"}' \
+        >/dev/null
+    '';
   };
   codexConfig = {
     personality = "pragmatic";
-    model = "gpt-5.5";
+    model = "gpt-5.6-sol";
 
     agents = {
-      max_threads = 6;
-      max_depth = 2;
+      max_threads = 8;
+      max_depth = 3;
       job_max_runtime_seconds = 1800;
     };
 
@@ -51,7 +99,7 @@ let
   shellGptConfig = {
     OPENAI_API_KEY = "ollama";
     API_BASE_URL = "${ollamaApiBase}/v1";
-    DEFAULT_MODEL = ollamaModel;
+    DEFAULT_MODEL = defaultLocal;
     USE_LITELLM = false;
     OPENAI_USE_FUNCTIONS = false;
   };
@@ -61,9 +109,9 @@ let
     schema = "v1";
     models = [
       {
-        name = "Ollama Gemma 4 26B A4B 4bit MLX";
+        name = "defaultLocal";
         provider = "ollama";
-        model = ollamaModel;
+        model = defaultLocal;
         apiBase = ollamaApiBase;
         roles = [
           "chat"
@@ -100,28 +148,49 @@ in
 
   home.file.".config/shell_gpt/.sgptrc".text = lib.generators.toKeyValue { } shellGptConfig;
 
-  home.file.".continue/config.yaml".source =
-    yamlFormat.generate "continue-config.yaml" continueConfig;
+  # home.file.".continue/config.yaml".source =
+  #   yamlFormat.generate "continue-config.yaml" continueConfig;
 
-  home.file.".gemini/settings.json".text = builtins.toJSON {
-    ide = {
-      hasSeenNudge = true;
-      enabled = true;
+  launchd.agents.ollamaService = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+    enable = true;
+    config = {
+      ProgramArguments = [
+        "${ollamaService}/bin/ollamaService"
+      ];
+      RunAtLoad = true;
+      KeepAlive = true;
+      ProcessType = "Background";
+      EnvironmentVariables = {
+        OLLAMA_HOST = localAi.ollamaHost;
+        OLLAMA_KEEP_ALIVE = "-1";
+      };
     };
-    model = {
-      name = "gemini-3.1-preview";
-    };
-    security = {
-      auth = {
-        selectedType = "oauth-personal";
+  };
+
+  launchd.agents.ollamaPreload = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+    enable = true;
+    config = {
+      ProgramArguments = [
+        "${ollamaPreload}/bin/ollamaPreload"
+      ];
+      RunAtLoad = true;
+      KeepAlive = {
+        SuccessfulExit = false;
+      };
+      ProcessType = "Background";
+      StandardOutPath = "/tmp/ollama-preload.log";
+      StandardErrorPath = "/tmp/ollama-preload.log";
+      EnvironmentVariables = {
+        OLLAMA_HOST = localAi.ollamaHost;
+        OLLAMA_KEEP_ALIVE = "-1";
       };
     };
   };
 
   home.packages = [
     codex-cli-nix.packages.${system}.codex
-    pkgs-unstable.gemini-cli
-    ollamaService
+    hermes-agent.packages.${system}.default
+    antigravity-nix.packages.${system}.google-antigravity-cli
     pkgs-unstable.ollama
     pkgs-unstable.shell-gpt
   ];

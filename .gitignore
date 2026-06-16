@@ -3,3 +3,6 @@ result
 # rust
 target/
 .cargo
+
+# macos
+.DS_Store

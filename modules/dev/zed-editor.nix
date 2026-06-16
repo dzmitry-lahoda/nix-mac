@@ -1,6 +1,12 @@
 {
   pkgs,
   zed,
+  localAi ? {
+    defaultLocal = "fortytwo-network-strand-rust-coder-14b-v1";
+    ollamaHost = "127.0.0.1:11434";
+    ollamaApiBase = "http://127.0.0.1:11434";
+    ollamaModel = "fortytwo-network-strand-rust-coder-14b-v1:latest";
+  },
   ...
 }:
 
@@ -22,8 +28,8 @@ in
       edit_predictions = {
         provider = "open_ai_compatible_api";
         open_ai_compatible_api = {
-          api_url = "http://127.0.0.1:1234/v1/completions";
-          model = "qwen/qwen3.6-27b";
+          api_url = "${localAi.ollamaApiBase}/v1/completions";
+          model = localAi.defaultLocal;
           prompt_format = "qwen";
           max_output_tokens = 64;
         };

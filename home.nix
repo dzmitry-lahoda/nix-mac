@@ -28,6 +28,16 @@ in
   home.username = username;
   home.homeDirectory = homeDir;
   home.stateVersion = "25.11";
+  _module.args.localAi =
+    let
+      defaultLocal = "fortytwo-network-strand-rust-coder-14b-v1";
+      ollamaHost = "127.0.0.1:11434";
+    in
+    {
+      inherit defaultLocal ollamaHost;
+      ollamaApiBase = "http://${ollamaHost}";
+      ollamaModel = "${defaultLocal}:latest";
+    };
   home.file.".config/nixpkgs/config.nix".text = ''
     allowUnfree = true;
   '';
@@ -126,14 +136,26 @@ in
       git.sign-on-push = true;
     };
   };
-  programs.anki = {
-    enable = true;
-    package = pkgs-unstable.anki;
-  };
+  # proken build on some version of nixpkgs, need to wait
+  # programs.anki = {
+  #   enable = true;
+  #   package = pkgs.anki;
+  # };
 
   services.syncthing = {
     enable = true;
     settings.options.urAccepted = 1;
+  };
+
+  launchd.agents.secretive = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+    enable = true;
+    config = {
+      ProgramArguments = [
+        "${pkgs-unstable.secretive}/Applications/Secretive.app/Contents/MacOS/Secretive"
+      ];
+      RunAtLoad = true;
+      KeepAlive = true;
+    };
   };
 
   home.activation.setGhosttyDefault = lib.hm.dag.entryAfter [ "writeBoundary" ] ''

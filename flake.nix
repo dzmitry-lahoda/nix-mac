@@ -10,6 +10,11 @@
       url = "github:sadjow/codex-cli-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hermes-agent = {
+      url = "github:NousResearch/hermes-agent";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    antigravity-nix.url = "github:jacopone/antigravity-nix";
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -26,6 +31,8 @@
       nixpkgs-unstable,
       zed,
       codex-cli-nix,
+      hermes-agent,
+      antigravity-nix,
       rust-overlay,
       home-manager,
       darwin,
@@ -52,10 +59,17 @@
       gemmaModelfile =
         pkgs.callPackage ./modules/ai/models/mlx-community-gemma-4-26b-a4b-it-4bit-mlx/modelfile.nix
           { inherit gemmaModel; };
+      strandRustCoderModel =
+        pkgs.callPackage ./modules/ai/models/fortytwo-network-strand-rust-coder-14b-v1/weights.nix
+          { };
+      strandRustCoderModelfile =
+        pkgs.callPackage ./modules/ai/models/fortytwo-network-strand-rust-coder-14b-v1/modelfile.nix
+          { inherit strandRustCoderModel; };
       ollamaService = pkgs.callPackage ./modules/ai/ollamaService.nix {
         ollama = pkgs-unstable.ollama;
-        inherit gemmaModel;
-        modelfile = gemmaModelfile;
+        model = strandRustCoderModel;
+        modelName = "fortytwo-network-strand-rust-coder-14b-v1:latest";
+        modelfile = strandRustCoderModelfile;
       };
     in
     {
@@ -95,6 +109,8 @@
                 inherit pkgs-unstable;
                 inherit zed;
                 inherit codex-cli-nix;
+                inherit hermes-agent;
+                inherit antigravity-nix;
               };
               home-manager.users.${username} = import ./home.nix;
             }
@@ -152,12 +168,16 @@
           inherit pkgs-unstable;
           inherit zed;
           inherit codex-cli-nix;
+          inherit hermes-agent;
+          inherit antigravity-nix;
         };
         modules = [ ./home.nix ];
       };
 
       packages.${system} = {
         inherit ollamaService;
+        inherit strandRustCoderModel;
+        inherit strandRustCoderModelfile;
         check = pkgs.libllvm;
       };
 
