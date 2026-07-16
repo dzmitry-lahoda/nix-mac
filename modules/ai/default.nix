@@ -191,6 +191,7 @@ in
     codex-cli-nix.packages.${system}.codex
     hermes-agent.packages.${system}.default
     antigravity-nix.packages.${system}.google-antigravity-cli
+    pkgs-unstable.goose-cli
     pkgs-unstable.ollama
     pkgs-unstable.shell-gpt
   ];
