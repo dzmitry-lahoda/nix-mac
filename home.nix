@@ -20,6 +20,8 @@ in
     ./modules/docs.nix
     ./modules/dev/tools.nix
     ./modules/media.nix
+    ./modules/networking.nix
+    ./modules/storage.nix
     ./modules/vm.nix
     ./modules/dev/vscode.nix
     ./modules/dev/zed-editor.nix
@@ -141,11 +143,6 @@ in
   #   enable = true;
   #   package = pkgs.anki;
   # };
-
-  services.syncthing = {
-    enable = true;
-    settings.options.urAccepted = 1;
-  };
 
   launchd.agents.secretive = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     enable = true;

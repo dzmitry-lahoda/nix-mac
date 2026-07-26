@@ -7,7 +7,6 @@ let
   clangUnwrapped = pkgs.llvmPackages.clang-unwrapped;
   bintools = pkgs.llvmPackages.bintools;
   libiconv = pkgs.libiconv;
-  appleSdk = pkgs.apple-sdk_14;
 in
 rec {
   inherit
@@ -15,7 +14,6 @@ rec {
     clangUnwrapped
     bintools
     libiconv
-    appleSdk
     ;
 
   packages = [
@@ -37,9 +35,6 @@ rec {
     # `clang` still needs an explicit library search path for Nix-provided
     # Darwin libs like libiconv when Cargo links binaries directly.
     LIBRARY_PATH = "${libiconv}/lib";
-    # Rust probes these directly on Darwin before invoking the wrapper.
-    DEVELOPER_DIR = "${appleSdk}";
-    SDKROOT = "${appleSdk}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk";
   };
   unwrappedEnv = {
     CC = "${clangUnwrapped}/bin/clang";

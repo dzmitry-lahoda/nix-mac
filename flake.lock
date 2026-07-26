@@ -6,11 +6,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1784620309,
-        "narHash": "sha256-lPV1KBOCL1vGRNgGYh0kDJm4hc5St9SVgOi6KbkmG+0=",
+        "lastModified": 1786606640,
+        "narHash": "sha256-sALm6JmsnlFaNFvEMpDZzDSKsMuEkY3i1VgaEC58Dp8=",
         "owner": "jacopone",
         "repo": "antigravity-nix",
-        "rev": "7fd0df73b864c2e385f625df06545c5b3868f057",
+        "rev": "d261a9a918fb753d5fb8695d5a6ec5bd2609fdbc",
         "type": "github"
       },
       "original": {
@@ -213,6 +213,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-ivpn": {
+      "locked": {
+        "lastModified": 1784136134,
+        "narHash": "sha256-nf9q5dTjCE3U2YuNrNW37RwVMauTkx7SaAaOnDY4r+s=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "d7b79ebf62c4c8c385c28a949c1b35d4addef501",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "pull/542306/head",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-lib": {
       "locked": {
         "lastModified": 1769909678,
@@ -377,6 +393,7 @@
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs_2",
+        "nixpkgs-ivpn": "nixpkgs-ivpn",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "rust-overlay": "rust-overlay",
         "zed": "zed"

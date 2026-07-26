@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-ivpn.url = "github:NixOS/nixpkgs?ref=pull/542306/head";
     zed.url = "github:zed-industries/zed";
     zed.inputs.nixpkgs.follows = "nixpkgs";
     codex-cli-nix = {
@@ -29,6 +30,7 @@
     {
       nixpkgs,
       nixpkgs-unstable,
+      nixpkgs-ivpn,
       zed,
       codex-cli-nix,
       hermes-agent,
@@ -51,6 +53,11 @@
         config.allowUnfree = true;
         config.allowUnsupportedSystem = true; # some cuda modules loaded by AI, not used
         overlays = [ rust-overlay.overlays.default ];
+      };
+      pkgs-ivpn = import nixpkgs-ivpn {
+        inherit system;
+        # config.allowUnfree = true;
+        # config.allowUnsupportedSystem = true;
       };
 
       gemmaModel =
@@ -106,7 +113,7 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
-                inherit pkgs-unstable;
+                inherit pkgs-unstable pkgs-ivpn;
                 inherit zed;
                 inherit codex-cli-nix;
                 inherit hermes-agent;
@@ -165,7 +172,7 @@
       homeConfigurations.${username} = home-manager.lib.homeManagerConfiguration {
         pkgs = pkgs;
         extraSpecialArgs = {
-          inherit pkgs-unstable;
+          inherit pkgs-unstable pkgs-ivpn;
           inherit zed;
           inherit codex-cli-nix;
           inherit hermes-agent;
