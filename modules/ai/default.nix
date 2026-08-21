@@ -5,6 +5,13 @@
   codex-cli-nix,
   hermes-agent,
   antigravity-nix,
+  agy-conductor,
+  agy-postgres,
+  codex-agy-plugin,
+  trailofbits-skills,
+  trailofbits-ask-questions,
+  trailofbits-skills-curated,
+  dba-review,
   localAi ? {
     defaultLocal = "fortytwo-network-strand-rust-coder-14b-v1";
     ollamaHost = "127.0.0.1:11434";
@@ -28,10 +35,39 @@ let
     text = ''
       exec ${codex}/bin/codex \
         --config model_provider=openrouter \
-        --model '~google/gemini-pro-latest' \
+        --model '~google/gemini-flash-latest' \
         "$@"
     '';
   };
+  sharedAgentSkills = {
+    ask-questions-if-underspecified = "${trailofbits-ask-questions}/plugins/ask-questions-if-underspecified/skills/ask-questions-if-underspecified";
+    differential-review = "${trailofbits-skills}/plugins/differential-review/skills/differential-review";
+    fp-check = "${trailofbits-skills}/plugins/fp-check/skills/fp-check";
+    property-based-testing = "${trailofbits-skills}/plugins/property-based-testing/skills/property-based-testing";
+    second-opinion = "${trailofbits-skills}/plugins/second-opinion/skills/second-opinion";
+    modern-python = "${trailofbits-skills}/plugins/modern-python/skills/modern-python";
+    supply-chain-risk-auditor = "${trailofbits-skills}/plugins/supply-chain-risk-auditor/skills/supply-chain-risk-auditor";
+    planning-with-files = "${trailofbits-skills-curated}/plugins/planning-with-files/skills/planning-with-files";
+    openai-gh-fix-ci = "${trailofbits-skills-curated}/plugins/openai-gh-fix-ci/skills/openai-gh-fix-ci";
+    dba-review = dba-review;
+  };
+  agySharedSkills = pkgs.linkFarm "agy-codex-skills" [
+    {
+      name = "plugin.json";
+      path = pkgs.writeText "agy-codex-skills-plugin.json" (
+        builtins.toJSON {
+          name = "codex-skills";
+          description = "Shared Codex and Antigravity coding skills";
+        }
+      );
+    }
+    {
+      name = "skills";
+      path = pkgs.linkFarm "agy-codex-skill-entries" (
+        lib.mapAttrsToList (name: path: { inherit name path; }) sharedAgentSkills
+      );
+    }
+  ];
   strandRustCoderModel =
     pkgs.callPackage ./models/fortytwo-network-strand-rust-coder-14b-v1/weights.nix
       { };
@@ -100,6 +136,12 @@ let
       "/Users/dz/Downloads".trust_level = "trusted";
       "/Users/dz/overlay/github.com/keanemind/jjk".trust_level = "trusted";
       "/Users/dz/overlay/github.com/dzmitry-lahoda/rowview".trust_level = "trusted";
+      "/Users/dz/overlay/github.com/jhpratt/*".trust_level = "trusted";
+    };
+
+    marketplaces.codex-agy-plugin = {
+      source_type = "local";
+      source = "${codex-agy-plugin}";
     };
 
     plugins = {
@@ -107,6 +149,7 @@ let
       "gmail@openai-curated".enabled = true;
       "slack@openai-curated".enabled = true;
       "github@openai-curated".enabled = true;
+      "codex-agy-plugin@codex-agy-plugin".enabled = true;
     };
 
     apps.connector_76869538009648d5b282a4bb21c3d157.tools.github_create_pull_request.approval_mode =
@@ -160,9 +203,26 @@ let
   };
 in
 {
-  home.file.".codex/config.toml".source = tomlFormat.generate "codex-config.toml" codexConfig;
-
-  home.file.".config/shell_gpt/.sgptrc".text = lib.generators.toKeyValue { } shellGptConfig;
+  home.file =
+    lib.mapAttrs' (
+      name: source:
+      lib.nameValuePair ".codex/skills/${name}" {
+        inherit source;
+        force = true;
+      }
+    ) sharedAgentSkills
+    // {
+      ".codex/config.toml".source = tomlFormat.generate "codex-config.toml" codexConfig;
+      ".codex/plugins/cache/codex-agy-plugin/codex-agy-plugin/0.1.11" = {
+        source = "${codex-agy-plugin}/plugins/codex-agy-plugin";
+        recursive = true;
+      };
+      ".codex/skills/agy".source = "${codex-agy-plugin}/plugins/codex-agy-plugin/skills/agy";
+      ".gemini/config/plugins/conductor".source = agy-conductor;
+      ".gemini/config/plugins/postgres".source = agy-postgres;
+      ".gemini/config/plugins/codex-skills".source = agySharedSkills;
+      ".config/shell_gpt/.sgptrc".text = lib.generators.toKeyValue { } shellGptConfig;
+    };
 
   # home.file.".continue/config.yaml".source =
   #   yamlFormat.generate "continue-config.yaml" continueConfig;
@@ -208,6 +268,7 @@ in
     codexGemini
     hermes-agent.packages.${system}.default
     antigravity-nix.packages.${system}.google-antigravity-cli
+    pkgs.nodejs
     pkgs-unstable.goose-cli
     pkgs-unstable.ollama
     pkgs-unstable.shell-gpt

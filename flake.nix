@@ -16,6 +16,34 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     antigravity-nix.url = "github:jacopone/antigravity-nix";
+    agy-conductor = {
+      url = "github:gemini-cli-extensions/conductor";
+      flake = false;
+    };
+    agy-postgres = {
+      url = "github:gemini-cli-extensions/postgres";
+      flake = false;
+    };
+    codex-agy-plugin = {
+      url = "github:sysCat64/codex-agy-plugin";
+      flake = false;
+    };
+    trailofbits-skills = {
+      url = "github:trailofbits/skills";
+      flake = false;
+    };
+    trailofbits-ask-questions = {
+      url = "github:trailofbits/skills/d5fe2e6a7896236c3102fd5477e833623ad70298";
+      flake = false;
+    };
+    trailofbits-skills-curated = {
+      url = "github:trailofbits/skills-curated";
+      flake = false;
+    };
+    dba-review = {
+      url = "github:dhdtech/dba-review";
+      flake = false;
+    };
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -35,6 +63,13 @@
       codex-cli-nix,
       hermes-agent,
       antigravity-nix,
+      agy-conductor,
+      agy-postgres,
+      codex-agy-plugin,
+      trailofbits-skills,
+      trailofbits-ask-questions,
+      trailofbits-skills-curated,
+      dba-review,
       rust-overlay,
       home-manager,
       darwin,
@@ -118,6 +153,13 @@
                 inherit codex-cli-nix;
                 inherit hermes-agent;
                 inherit antigravity-nix;
+                inherit agy-conductor agy-postgres codex-agy-plugin;
+                inherit
+                  trailofbits-skills
+                  trailofbits-ask-questions
+                  trailofbits-skills-curated
+                  dba-review
+                  ;
               };
               home-manager.users.${username} = import ./home.nix;
             }
@@ -177,6 +219,13 @@
           inherit codex-cli-nix;
           inherit hermes-agent;
           inherit antigravity-nix;
+          inherit agy-conductor agy-postgres codex-agy-plugin;
+          inherit
+            trailofbits-skills
+            trailofbits-ask-questions
+            trailofbits-skills-curated
+            dba-review
+            ;
         };
         modules = [ ./home.nix ];
       };

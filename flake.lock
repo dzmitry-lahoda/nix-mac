@@ -1,21 +1,69 @@
 {
   "nodes": {
+    "agy-conductor": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1786413393,
+        "narHash": "sha256-j5NiBmHqMVt2tfHm+soZN3gwzH8R1gtXjBQ+vU2tbbU=",
+        "owner": "gemini-cli-extensions",
+        "repo": "conductor",
+        "rev": "f06add33b598f4262a190f234828dda551db70d7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gemini-cli-extensions",
+        "repo": "conductor",
+        "type": "github"
+      }
+    },
+    "agy-postgres": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787346401,
+        "narHash": "sha256-874kfl3P2DbZBgIFgw2do0m92BD8nAJsocATG8H3mvQ=",
+        "owner": "gemini-cli-extensions",
+        "repo": "postgres",
+        "rev": "adbe84bc5174c61d64355c7155ebd751c90e06bf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gemini-cli-extensions",
+        "repo": "postgres",
+        "type": "github"
+      }
+    },
     "antigravity-nix": {
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1786606640,
-        "narHash": "sha256-sALm6JmsnlFaNFvEMpDZzDSKsMuEkY3i1VgaEC58Dp8=",
+        "lastModified": 1787469401,
+        "narHash": "sha256-SO6H7d/lmCK7wGrlXUmNRzSjSutHVmu0d98vGGAczAw=",
         "owner": "jacopone",
         "repo": "antigravity-nix",
-        "rev": "d261a9a918fb753d5fb8695d5a6ec5bd2609fdbc",
+        "rev": "5cca36bb5e898c18cd62f1a8fb01ce2cd2980b3b",
         "type": "github"
       },
       "original": {
         "owner": "jacopone",
         "repo": "antigravity-nix",
+        "type": "github"
+      }
+    },
+    "codex-agy-plugin": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1781937344,
+        "narHash": "sha256-/9KX+DV6Xa0FlGLvVcbS+ehELtzaFoZ9V/JVMbJe46g=",
+        "owner": "sysCat64",
+        "repo": "codex-agy-plugin",
+        "rev": "5faa6a7f2beab12e329558f06e618df99543bb5a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sysCat64",
+        "repo": "codex-agy-plugin",
         "type": "github"
       }
     },
@@ -73,6 +121,22 @@
         "owner": "lnl7",
         "ref": "nix-darwin-25.11",
         "repo": "nix-darwin",
+        "type": "github"
+      }
+    },
+    "dba-review": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1778009986,
+        "narHash": "sha256-JC0AiclW4ikNX0D3rQMWdxRhc1MdrG7vlZOPz6IcR/E=",
+        "owner": "dhdtech",
+        "repo": "dba-review",
+        "rev": "a43f0a60da6283ef8c8838d32e36d7a50b9ace59",
+        "type": "github"
+      },
+      "original": {
+        "owner": "dhdtech",
+        "repo": "dba-review",
         "type": "github"
       }
     },
@@ -387,15 +451,22 @@
     },
     "root": {
       "inputs": {
+        "agy-conductor": "agy-conductor",
+        "agy-postgres": "agy-postgres",
         "antigravity-nix": "antigravity-nix",
+        "codex-agy-plugin": "codex-agy-plugin",
         "codex-cli-nix": "codex-cli-nix",
         "darwin": "darwin",
+        "dba-review": "dba-review",
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-ivpn": "nixpkgs-ivpn",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "rust-overlay": "rust-overlay",
+        "trailofbits-ask-questions": "trailofbits-ask-questions",
+        "trailofbits-skills": "trailofbits-skills",
+        "trailofbits-skills-curated": "trailofbits-skills-curated",
         "zed": "zed"
       }
     },
@@ -467,6 +538,55 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "trailofbits-ask-questions": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1780676921,
+        "narHash": "sha256-VCIy7AaKLHD4paZUDpuAKkchRbGyaw3KY/khS55ypw0=",
+        "owner": "trailofbits",
+        "repo": "skills",
+        "rev": "d5fe2e6a7896236c3102fd5477e833623ad70298",
+        "type": "github"
+      },
+      "original": {
+        "owner": "trailofbits",
+        "repo": "skills",
+        "rev": "d5fe2e6a7896236c3102fd5477e833623ad70298",
+        "type": "github"
+      }
+    },
+    "trailofbits-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1787321383,
+        "narHash": "sha256-hQeyXgl4CJecknXjihhY5vNm8M9h8TzPeGNz8HT4zfc=",
+        "owner": "trailofbits",
+        "repo": "skills",
+        "rev": "293fb74c3151cceda32a85a545fe8acd67f8f5c6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "trailofbits",
+        "repo": "skills",
+        "type": "github"
+      }
+    },
+    "trailofbits-skills-curated": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1784051595,
+        "narHash": "sha256-hN1GoMDYvvF6pmypSuI7++Buhrq/vAkbKrZJof15nOo=",
+        "owner": "trailofbits",
+        "repo": "skills-curated",
+        "rev": "6d05be4889017b06fb15069f371afd220daffb62",
+        "type": "github"
+      },
+      "original": {
+        "owner": "trailofbits",
+        "repo": "skills-curated",
         "type": "github"
       }
     },
