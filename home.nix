@@ -21,6 +21,7 @@ in
     ./modules/dev/tools.nix
     ./modules/media.nix
     ./modules/networking.nix
+    ./modules/security.nix
     ./modules/storage.nix
     ./modules/vm.nix
     ./modules/dev/vscode.nix
@@ -58,7 +59,6 @@ in
       "erasedups"
     ];
     sessionVariables = {
-      SSH_AUTH_SOCK = "${homeDir}/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
       PATH = "$HOME/.nix-profile/bin:/etc/profiles/per-user/${username}/bin:/run/current-system/sw/bin:/nix/var/nix/profiles/default/bin:$PATH";
       PROTOC = "${pkgs.protobuf}/bin/protoc";
     }
@@ -144,17 +144,6 @@ in
   #   package = pkgs.anki;
   # };
 
-  launchd.agents.secretive = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-    enable = true;
-    config = {
-      ProgramArguments = [
-        "${pkgs-unstable.secretive}/Applications/Secretive.app/Contents/MacOS/Secretive"
-      ];
-      RunAtLoad = true;
-      KeepAlive = true;
-    };
-  };
-
   home.activation.setGhosttyDefault = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     if command -v duti >/dev/null 2>&1; then
       duti -s com.mitchellh.ghostty public.unix-executable all || true
@@ -173,7 +162,6 @@ in
       openssh
     ])
     ++ (with pkgs-unstable; [
-      secretive
       trezord
     ]);
 }

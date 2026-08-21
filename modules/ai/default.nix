@@ -22,6 +22,16 @@ let
   ollamaModel = localAi.ollamaModel;
   defaultLocal = localAi.defaultLocal;
   geminiModel = "gemini-3.1-pro";
+  codex = codex-cli-nix.packages.${system}.codex;
+  codexGemini = pkgs.writeShellApplication {
+    name = "codex-gemini";
+    text = ''
+      exec ${codex}/bin/codex \
+        --config model_provider=openrouter \
+        --model '~google/gemini-pro-latest' \
+        "$@"
+    '';
+  };
   strandRustCoderModel =
     pkgs.callPackage ./models/fortytwo-network-strand-rust-coder-14b-v1/weights.nix
       { };
@@ -71,6 +81,12 @@ let
   codexConfig = {
     personality = "pragmatic";
     model = "gpt-5.6-sol";
+
+    model_providers.openrouter = {
+      name = "OpenRouter";
+      base_url = "https://openrouter.ai/api/v1";
+      env_key = "OPENROUTER_API_KEY";
+    };
 
     agents = {
       max_threads = 8;
@@ -188,7 +204,8 @@ in
   };
 
   home.packages = [
-    codex-cli-nix.packages.${system}.codex
+    codex
+    codexGemini
     hermes-agent.packages.${system}.default
     antigravity-nix.packages.${system}.google-antigravity-cli
     pkgs-unstable.goose-cli

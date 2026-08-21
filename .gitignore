@@ -6,3 +6,6 @@ target/
 
 # macos
 .DS_Store
+
+# ops
+.env
