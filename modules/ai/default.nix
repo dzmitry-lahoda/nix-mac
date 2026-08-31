@@ -136,7 +136,7 @@ let
       "/Users/dz/Downloads".trust_level = "trusted";
       "/Users/dz/overlay/github.com/keanemind/jjk".trust_level = "trusted";
       "/Users/dz/overlay/github.com/dzmitry-lahoda/rowview".trust_level = "trusted";
-      "/Users/dz/overlay/github.com/jhpratt/*".trust_level = "trusted";
+      "/Users/dz/overlay/github.com/jhpratt/deranged".trust_level = "trusted";
     };
 
     marketplaces.codex-agy-plugin = {
