@@ -2,7 +2,7 @@
   description = "macOS Home Manager + Codex CLI";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-ivpn.url = "github:NixOS/nixpkgs?ref=pull/542306/head";
     zed.url = "github:zed-industries/zed";
@@ -47,10 +47,10 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
 
-    darwin.url = "github:lnl7/nix-darwin/nix-darwin-25.11";
+    darwin.url = "github:lnl7/nix-darwin/nix-darwin-26.05";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
   };
 

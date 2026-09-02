@@ -42,7 +42,9 @@ in
       ollamaModel = "${defaultLocal}:latest";
     };
   home.file.".config/nixpkgs/config.nix".text = ''
-    allowUnfree = true;
+    {
+      allowUnfree = true;
+    }
   '';
 
   programs.ssh = {

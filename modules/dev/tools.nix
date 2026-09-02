@@ -64,6 +64,7 @@ in
     rustCToolchain.packages
     ++ (with pkgs; [
       android-tools
+      cargo-cache
       git
       git-lfs
       act
@@ -87,7 +88,7 @@ in
       # swift
       tesseract
       uv
-      visidata
+      #visidata
       zellij
       zig
     ]);
