@@ -113,6 +113,9 @@
         modelName = "fortytwo-network-strand-rust-coder-14b-v1:latest";
         modelfile = strandRustCoderModelfile;
       };
+      codex-this = pkgs.callPackage ./modules/ai/codex-this.nix {
+        codex = codex-cli-nix.packages.${system}.codex;
+      };
     in
     {
       darwinConfigurations = {
@@ -168,6 +171,11 @@
       };
 
       apps.${system} = {
+        codex-this = {
+          type = "app";
+          program = "${codex-this}/bin/codex-this";
+        };
+
         rebuild = {
           type = "app";
           program = "${
@@ -231,6 +239,7 @@
       };
 
       packages.${system} = {
+        codex-this = codex-this;
         inherit ollamaService;
         inherit strandRustCoderModel;
         inherit strandRustCoderModelfile;

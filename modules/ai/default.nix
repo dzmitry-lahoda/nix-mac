@@ -28,7 +28,7 @@ let
   ollamaApiBase = localAi.ollamaApiBase;
   ollamaModel = localAi.ollamaModel;
   defaultLocal = localAi.defaultLocal;
-  geminiModel = "gemini-3.1-pro";
+  agyModel = "Gemini 3.8 Flash (High)";
   codex = codex-cli-nix.packages.${system}.codex;
   codexGemini = pkgs.writeShellApplication {
     name = "codex-gemini";
@@ -39,6 +39,7 @@ let
         "$@"
     '';
   };
+  codex-this = pkgs.callPackage ./codex-this.nix { inherit codex; };
   sharedAgentSkills = {
     ask-questions-if-underspecified = "${trailofbits-ask-questions}/plugins/ask-questions-if-underspecified/skills/ask-questions-if-underspecified";
     differential-review = "${trailofbits-skills}/plugins/differential-review/skills/differential-review";
@@ -116,7 +117,7 @@ let
   };
   codexConfig = {
     personality = "pragmatic";
-    model = "gpt-5.6-sol";
+    model = "gpt-6-astra";
 
     model_providers.openrouter = {
       name = "OpenRouter";
@@ -213,6 +214,70 @@ in
     ) sharedAgentSkills
     // {
       ".codex/config.toml".source = tomlFormat.generate "codex-config.toml" codexConfig;
+      ".gemini/antigravity-cli/settings.json".text = builtins.toJSON {
+        allowNonWorkspaceAccess = true;
+        model = agyModel;
+        permissions.allow = [
+          "command(git clone)"
+          "command(git fetch)"
+          "command(git checkout)"
+          "command(git show)"
+          "command(git log)"
+          "command(git diff)"
+          "command(nix)"
+          "command(lsof)"
+          "command(ps)"
+          "command(grep)"
+          "command(psql)"
+          "command(env)"
+          "command(cat)"
+          "command(xargs)"
+          "command(diff)"
+          "command(git status)"
+          "command(z)"
+          "command(git restore)"
+          "command(git grep)"
+          "command(git merge-base)"
+          "command(gh)"
+          "command(mkdir)"
+          "command(ls)"
+          "command(git worktree)"
+          "command(pkill)"
+          "command(fd)"
+          "command(sd)"
+          "command(fzf)"
+          "command(cp)"
+          "command(sleep)"
+          "command(docker ps)"
+          "command(cargo update)"
+          "command(git branch)"
+          "command(git add)"
+          "command(git commit)"
+          "command(git rev-parse)"
+          "command(head)"
+          "command(mv)"
+          "command(wait)"
+          "command(agy)"
+          "command(which)"
+          "command(darwin-rebuild)"
+          "command(date)"
+          "command(pwd)"
+          "command(curl)"
+          "command(cargo init --lib)"
+          "command(cargo test)"
+          "command(cargo check --tests)"
+          "command(cargo check --all-targets)"
+          "command(cargo check)"
+          "command(git pull)"
+          "command(git remote)"
+          "command(magic)"
+          "command(git reflog)"
+          "command(jj status)"
+          "command(jj log)"
+          "command(jj bookmark)"
+        ];
+        trustedWorkspaces = [ "/Users/dz/overlay/github.com" ];
+      };
       ".codex/plugins/cache/codex-agy-plugin/codex-agy-plugin/0.1.11" = {
         source = "${codex-agy-plugin}/plugins/codex-agy-plugin";
         recursive = true;
@@ -266,6 +331,7 @@ in
   home.packages = [
     codex
     codexGemini
+    codex-this
     hermes-agent.packages.${system}.default
     antigravity-nix.packages.${system}.google-antigravity-cli
     pkgs.nodejs
