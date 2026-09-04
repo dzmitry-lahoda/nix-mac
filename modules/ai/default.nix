@@ -39,6 +39,7 @@ let
         "$@"
     '';
   };
+  codex-this = pkgs.callPackage ./codex-this.nix { inherit codex; };
   sharedAgentSkills = {
     ask-questions-if-underspecified = "${trailofbits-ask-questions}/plugins/ask-questions-if-underspecified/skills/ask-questions-if-underspecified";
     differential-review = "${trailofbits-skills}/plugins/differential-review/skills/differential-review";
@@ -266,6 +267,7 @@ in
   home.packages = [
     codex
     codexGemini
+    codex-this
     hermes-agent.packages.${system}.default
     antigravity-nix.packages.${system}.google-antigravity-cli
     pkgs.nodejs
