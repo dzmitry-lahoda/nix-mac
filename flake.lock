@@ -482,7 +482,6 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "rust-overlay": "rust-overlay",
         "trailofbits-ask-questions": "trailofbits-ask-questions",
-        "trailofbits-code-improver": "trailofbits-code-improver",
         "trailofbits-skills": "trailofbits-skills",
         "trailofbits-skills-curated": "trailofbits-skills-curated",
         "zed": "zed"
@@ -576,7 +575,7 @@
         "type": "github"
       }
     },
-    "trailofbits-code-improver": {
+    "trailofbits-skills": {
       "flake": false,
       "locked": {
         "lastModified": 1788371049,
@@ -584,22 +583,6 @@
         "owner": "trailofbits",
         "repo": "skills",
         "rev": "d3323cefbcf645678b8dc481de204b02ad3d02dc",
-        "type": "github"
-      },
-      "original": {
-        "owner": "trailofbits",
-        "repo": "skills",
-        "type": "github"
-      }
-    },
-    "trailofbits-skills": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1787321383,
-        "narHash": "sha256-hQeyXgl4CJecknXjihhY5vNm8M9h8TzPeGNz8HT4zfc=",
-        "owner": "trailofbits",
-        "repo": "skills",
-        "rev": "293fb74c3151cceda32a85a545fe8acd67f8f5c6",
         "type": "github"
       },
       "original": {

@@ -36,6 +36,11 @@
       url = "github:trailofbits/skills-curated";
       flake = false;
     };
+    # This skill was removed from newer trailofbits-skills revisions.
+    trailofbits-ask-questions = {
+      url = "github:trailofbits/skills/d5fe2e6a7896236c3102fd5477e833623ad70298";
+      flake = false;
+    };
     dba-review = {
       url = "github:dhdtech/dba-review";
       flake = false;
@@ -67,6 +72,7 @@
       agy-postgres,
       codex-agy-plugin,
       trailofbits-skills,
+      trailofbits-ask-questions,
       trailofbits-skills-curated,
       dba-review,
       i-have-adhd,
@@ -159,6 +165,7 @@
                 inherit agy-conductor agy-postgres codex-agy-plugin;
                 inherit
                   trailofbits-skills
+                  trailofbits-ask-questions
                   trailofbits-skills-curated
                   dba-review
                   i-have-adhd
@@ -230,6 +237,7 @@
           inherit agy-conductor agy-postgres codex-agy-plugin;
           inherit
             trailofbits-skills
+            trailofbits-ask-questions
             trailofbits-skills-curated
             dba-review
             i-have-adhd

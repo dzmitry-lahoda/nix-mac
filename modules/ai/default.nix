@@ -9,8 +9,6 @@
   agy-postgres,
   codex-agy-plugin,
   trailofbits-skills,
-  trailofbits-code-improver,
-  trailofbits-ask-questions,
   trailofbits-skills-curated,
   dba-review,
   i-have-adhd,
@@ -44,10 +42,9 @@ let
   codex-this = pkgs.callPackage ./codex-this.nix { inherit codex; };
   sharedAgentSkills = {
     # Upstream's loop requires Claude Code's Workflow tool; other clients can only load the skill.
-    code-improver = "${trailofbits-code-improver}/plugins/code-improver/skills/code-improver";
+    code-improver = "${trailofbits-skills}/plugins/code-improver/skills/code-improver";
     # Upstream compliance checks also require the Workflow tool.
-    spec-to-code-compliance = "${trailofbits-skills}/plugins/spec-to-code-compliance/skills/spec-to-code-compliance";
-    ask-questions-if-underspecified = "${trailofbits-ask-questions}/plugins/ask-questions-if-underspecified/skills/ask-questions-if-underspecified";
+    spec-to-code-compliance = "${trailofbits-skills}/plugins/spec-to-code-compliance/skills/spec-to-code-compliance";    
     fp-check = "${trailofbits-skills}/plugins/fp-check/skills/fp-check";
     property-based-testing = "${trailofbits-skills}/plugins/property-based-testing/skills/property-based-testing";
     mutation-testing = "${trailofbits-skills}/plugins/mutation-testing/skills/mutation-testing";
