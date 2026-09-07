@@ -45,6 +45,10 @@
       url = "github:dhdtech/dba-review";
       flake = false;
     };
+    caveman = {
+      url = "github:JuliusBrussee/caveman";
+      flake = false;
+    };
     i-have-adhd = {
       url = "github:ayghri/i-have-adhd";
       flake = false;
@@ -75,6 +79,7 @@
       trailofbits-ask-questions,
       trailofbits-skills-curated,
       dba-review,
+      caveman,
       i-have-adhd,
       rust-overlay,
       home-manager,
@@ -168,6 +173,7 @@
                   trailofbits-ask-questions
                   trailofbits-skills-curated
                   dba-review
+                  caveman
                   i-have-adhd
                   ;
               };
@@ -240,6 +246,7 @@
             trailofbits-ask-questions
             trailofbits-skills-curated
             dba-review
+            caveman
             i-have-adhd
             ;
         };

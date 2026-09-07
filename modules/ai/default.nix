@@ -11,6 +11,7 @@
   trailofbits-skills,
   trailofbits-skills-curated,
   dba-review,
+  caveman,
   i-have-adhd,
   localAi ? {
     defaultLocal = "fortytwo-network-strand-rust-coder-14b-v1";
@@ -56,6 +57,7 @@ let
     openai-gh-fix-ci = "${trailofbits-skills-curated}/plugins/openai-gh-fix-ci/skills/openai-gh-fix-ci";
     audit-context-building = "${trailofbits-skills}/plugins/audit-context-building/skills/audit-context-building";
     differential-review = "${trailofbits-skills}/plugins/differential-review/skills/differential-review";
+    dimensional-analysis = "${trailofbits-skills}/plugins/dimensional-analysis/skills/dimensional-analysis";
     audit-augmentation = "${trailofbits-skills}/plugins/trailmark/skills/audit-augmentation";
     crypto-protocol-diagram = "${trailofbits-skills}/plugins/trailmark/skills/crypto-protocol-diagram";
     diagramming-code = "${trailofbits-skills}/plugins/trailmark/skills/diagramming-code";
@@ -72,6 +74,7 @@ let
     vector-forge = "${trailofbits-skills}/plugins/trailmark/skills/vector-forge";
     i-have-adhd = "${i-have-adhd}/skills/i-have-adhd";
     dba-review = dba-review;
+    caveman = "${caveman}/skills/caveman";
   };
   agySharedSkills = pkgs.linkFarm "agy-codex-skills" [
     {

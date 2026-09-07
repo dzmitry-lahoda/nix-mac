@@ -51,6 +51,22 @@
         "type": "github"
       }
     },
+    "caveman": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788769183,
+        "narHash": "sha256-GuCK3oy0DsMOQq7gHjIY/aeaukJcTvelfg+tp7R7Du4=",
+        "owner": "JuliusBrussee",
+        "repo": "caveman",
+        "rev": "15581d14007fd01fb3f132016741962f34936ca2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "JuliusBrussee",
+        "repo": "caveman",
+        "type": "github"
+      }
+    },
     "codex-agy-plugin": {
       "flake": false,
       "locked": {
@@ -470,6 +486,7 @@
         "agy-conductor": "agy-conductor",
         "agy-postgres": "agy-postgres",
         "antigravity-nix": "antigravity-nix",
+        "caveman": "caveman",
         "codex-agy-plugin": "codex-agy-plugin",
         "codex-cli-nix": "codex-cli-nix",
         "darwin": "darwin",
