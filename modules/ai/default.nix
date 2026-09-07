@@ -13,6 +13,7 @@
   dba-review,
   caveman,
   i-have-adhd,
+  asd-ste100-skill,
   localAi ? {
     defaultLocal = "fortytwo-network-strand-rust-coder-14b-v1";
     ollamaHost = "127.0.0.1:11434";
@@ -41,10 +42,14 @@ let
     '';
   };
   codex-this = pkgs.callPackage ./codex-this.nix { inherit codex; };
-  sharedAgentSkills = {
-    # Upstream's loop requires Claude Code's Workflow tool; other clients can only load the skill.
+
+  proseAgentSkills = {
+    i-have-adhd = "${i-have-adhd}/skills/i-have-adhd";
+    caveman = "${caveman}/skills/caveman";
+    asd-ste100-skill = asd-ste100-skill;
+  };
+  codeAnalysisAgentSkills = {
     code-improver = "${trailofbits-skills}/plugins/code-improver/skills/code-improver";
-    # Upstream compliance checks also require the Workflow tool.
     spec-to-code-compliance = "${trailofbits-skills}/plugins/spec-to-code-compliance/skills/spec-to-code-compliance";    
     fp-check = "${trailofbits-skills}/plugins/fp-check/skills/fp-check";
     property-based-testing = "${trailofbits-skills}/plugins/property-based-testing/skills/property-based-testing";
@@ -72,10 +77,9 @@ let
     trailmark-summary = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-summary";
     trailmark-variant-neighborhood = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-variant-neighborhood";
     vector-forge = "${trailofbits-skills}/plugins/trailmark/skills/vector-forge";
-    i-have-adhd = "${i-have-adhd}/skills/i-have-adhd";
     dba-review = dba-review;
-    caveman = "${caveman}/skills/caveman";
   };
+  sharedAgentSkills = proseAgentSkills // codeAnalysisAgentSkills;
   agySharedSkills = pkgs.linkFarm "agy-codex-skills" [
     {
       name = "plugin.json";

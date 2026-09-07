@@ -45,6 +45,10 @@
       url = "github:dhdtech/dba-review";
       flake = false;
     };
+    asd-ste100-skill = {
+      url = "github:danyuchn/asd-ste100-skill";
+      flake = false;
+    };
     caveman = {
       url = "github:JuliusBrussee/caveman";
       flake = false;
@@ -81,6 +85,7 @@
       dba-review,
       caveman,
       i-have-adhd,
+      asd-ste100-skill,
       rust-overlay,
       home-manager,
       darwin,
@@ -175,6 +180,7 @@
                   dba-review
                   caveman
                   i-have-adhd
+                  asd-ste100-skill
                   ;
               };
               home-manager.users.${username} = import ./home.nix;
@@ -248,6 +254,7 @@
             dba-review
             caveman
             i-have-adhd
+            asd-ste100-skill
             ;
         };
         modules = [ ./home.nix ];
