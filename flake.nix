@@ -32,16 +32,16 @@
       url = "github:trailofbits/skills";
       flake = false;
     };
-    trailofbits-ask-questions = {
-      url = "github:trailofbits/skills/d5fe2e6a7896236c3102fd5477e833623ad70298";
-      flake = false;
-    };
     trailofbits-skills-curated = {
       url = "github:trailofbits/skills-curated";
       flake = false;
     };
     dba-review = {
       url = "github:dhdtech/dba-review";
+      flake = false;
+    };
+    i-have-adhd = {
+      url = "github:ayghri/i-have-adhd";
       flake = false;
     };
     rust-overlay.url = "github:oxalica/rust-overlay";
@@ -67,9 +67,9 @@
       agy-postgres,
       codex-agy-plugin,
       trailofbits-skills,
-      trailofbits-ask-questions,
       trailofbits-skills-curated,
       dba-review,
+      i-have-adhd,
       rust-overlay,
       home-manager,
       darwin,
@@ -159,9 +159,9 @@
                 inherit agy-conductor agy-postgres codex-agy-plugin;
                 inherit
                   trailofbits-skills
-                  trailofbits-ask-questions
                   trailofbits-skills-curated
                   dba-review
+                  i-have-adhd
                   ;
               };
               home-manager.users.${username} = import ./home.nix;
@@ -230,9 +230,9 @@
           inherit agy-conductor agy-postgres codex-agy-plugin;
           inherit
             trailofbits-skills
-            trailofbits-ask-questions
             trailofbits-skills-curated
             dba-review
+            i-have-adhd
             ;
         };
         modules = [ ./home.nix ];

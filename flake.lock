@@ -261,6 +261,22 @@
         "type": "github"
       }
     },
+    "i-have-adhd": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788295755,
+        "narHash": "sha256-SU2E8TA63SDmKZlh23PDxkWKk2t7g0kA+SPs7bNcK1o=",
+        "owner": "ayghri",
+        "repo": "i-have-adhd",
+        "rev": "58494af57962b2d7a996b4d419474380a299af5e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ayghri",
+        "repo": "i-have-adhd",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1778869304,
@@ -460,11 +476,13 @@
         "dba-review": "dba-review",
         "hermes-agent": "hermes-agent",
         "home-manager": "home-manager",
+        "i-have-adhd": "i-have-adhd",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-ivpn": "nixpkgs-ivpn",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "rust-overlay": "rust-overlay",
         "trailofbits-ask-questions": "trailofbits-ask-questions",
+        "trailofbits-code-improver": "trailofbits-code-improver",
         "trailofbits-skills": "trailofbits-skills",
         "trailofbits-skills-curated": "trailofbits-skills-curated",
         "zed": "zed"
@@ -555,6 +573,22 @@
         "owner": "trailofbits",
         "repo": "skills",
         "rev": "d5fe2e6a7896236c3102fd5477e833623ad70298",
+        "type": "github"
+      }
+    },
+    "trailofbits-code-improver": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788371049,
+        "narHash": "sha256-gkNXbN3CwrQ0tRmD9JTDeb+uPlSkGUpUi8Pan4EAWlw=",
+        "owner": "trailofbits",
+        "repo": "skills",
+        "rev": "d3323cefbcf645678b8dc481de204b02ad3d02dc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "trailofbits",
+        "repo": "skills",
         "type": "github"
       }
     },

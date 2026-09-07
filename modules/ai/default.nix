@@ -9,9 +9,11 @@
   agy-postgres,
   codex-agy-plugin,
   trailofbits-skills,
+  trailofbits-code-improver,
   trailofbits-ask-questions,
   trailofbits-skills-curated,
   dba-review,
+  i-have-adhd,
   localAi ? {
     defaultLocal = "fortytwo-network-strand-rust-coder-14b-v1";
     ollamaHost = "127.0.0.1:11434";
@@ -41,15 +43,37 @@ let
   };
   codex-this = pkgs.callPackage ./codex-this.nix { inherit codex; };
   sharedAgentSkills = {
+    # Upstream's loop requires Claude Code's Workflow tool; other clients can only load the skill.
+    code-improver = "${trailofbits-code-improver}/plugins/code-improver/skills/code-improver";
+    # Upstream compliance checks also require the Workflow tool.
+    spec-to-code-compliance = "${trailofbits-skills}/plugins/spec-to-code-compliance/skills/spec-to-code-compliance";
     ask-questions-if-underspecified = "${trailofbits-ask-questions}/plugins/ask-questions-if-underspecified/skills/ask-questions-if-underspecified";
-    differential-review = "${trailofbits-skills}/plugins/differential-review/skills/differential-review";
     fp-check = "${trailofbits-skills}/plugins/fp-check/skills/fp-check";
     property-based-testing = "${trailofbits-skills}/plugins/property-based-testing/skills/property-based-testing";
+    mutation-testing = "${trailofbits-skills}/plugins/mutation-testing/skills/mutation-testing";
+    rust-review = "${trailofbits-skills}/plugins/rust-review/skills/rust-review";
     second-opinion = "${trailofbits-skills}/plugins/second-opinion/skills/second-opinion";
     modern-python = "${trailofbits-skills}/plugins/modern-python/skills/modern-python";
     supply-chain-risk-auditor = "${trailofbits-skills}/plugins/supply-chain-risk-auditor/skills/supply-chain-risk-auditor";
     planning-with-files = "${trailofbits-skills-curated}/plugins/planning-with-files/skills/planning-with-files";
     openai-gh-fix-ci = "${trailofbits-skills-curated}/plugins/openai-gh-fix-ci/skills/openai-gh-fix-ci";
+    audit-context-building = "${trailofbits-skills}/plugins/audit-context-building/skills/audit-context-building";
+    differential-review = "${trailofbits-skills}/plugins/differential-review/skills/differential-review";
+    audit-augmentation = "${trailofbits-skills}/plugins/trailmark/skills/audit-augmentation";
+    crypto-protocol-diagram = "${trailofbits-skills}/plugins/trailmark/skills/crypto-protocol-diagram";
+    diagramming-code = "${trailofbits-skills}/plugins/trailmark/skills/diagramming-code";
+    genotoxic = "${trailofbits-skills}/plugins/trailmark/skills/genotoxic";
+    graph-evolution = "${trailofbits-skills}/plugins/trailmark/skills/graph-evolution";
+    mermaid-to-proverif = "${trailofbits-skills}/plugins/trailmark/skills/mermaid-to-proverif";
+    slicing-code-context = "${trailofbits-skills}/plugins/trailmark/skills/slicing-code-context";
+    trailmark = "${trailofbits-skills}/plugins/trailmark/skills/trailmark";
+    trailmark-finding-triage = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-finding-triage";
+    trailmark-review-gate = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-review-gate";
+    trailmark-structural = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-structural";
+    trailmark-summary = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-summary";
+    trailmark-variant-neighborhood = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-variant-neighborhood";
+    vector-forge = "${trailofbits-skills}/plugins/trailmark/skills/vector-forge";
+    i-have-adhd = "${i-have-adhd}/skills/i-have-adhd";
     dba-review = dba-review;
   };
   agySharedSkills = pkgs.linkFarm "agy-codex-skills" [
@@ -283,6 +307,11 @@ in
         recursive = true;
       };
       ".codex/skills/agy".source = "${codex-agy-plugin}/plugins/codex-agy-plugin/skills/agy";
+      # Keep rust-review's scripts, prompts, and agent definitions discoverable by its fallback search.
+      ".codex/plugins/rust-review" = {
+        source = "${trailofbits-skills}/plugins/rust-review";
+        recursive = true;
+      };
       ".gemini/config/plugins/conductor".source = agy-conductor;
       ".gemini/config/plugins/postgres".source = agy-postgres;
       ".gemini/config/plugins/codex-skills".source = agySharedSkills;
