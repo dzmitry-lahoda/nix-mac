@@ -177,9 +177,9 @@ let
     };
 
     agents = {
-      max_threads = 8;
-      max_depth = 3;
-      job_max_runtime_seconds = 1800;
+      max_concurrent_threads_per_session = 8;
+      max_depth = 4;
+      background_terminal_max_timeout = 900000; # millis
     };
 
     projects = {
