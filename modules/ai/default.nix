@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   pkgs-unstable,
@@ -8,6 +9,7 @@
   agy-conductor,
   agy-postgres,
   codex-agy-plugin,
+  agent-skills-nix,
   trailofbits-skills,
   trailofbits-skills-curated,
   dba-review,
@@ -46,51 +48,63 @@ let
   };
   codex-this = pkgs.callPackage ./codex-this.nix { inherit codex; };
 
-  proseAgentSkills = {
-    i-have-adhd = "${i-have-adhd}/skills/i-have-adhd";
-    caveman = "${caveman}/skills/caveman";
-    asd-ste100-skill = asd-ste100-skill;
-  };
-  setupSkills = {
-    modern-python = "${trailofbits-skills}/plugins/modern-python/skills/modern-python";
-  };
-  codeAnalysisAgentSkills = {
-    code-improver = "${trailofbits-skills}/plugins/code-improver/skills/code-improver";
-    spec-to-code-compliance = "${trailofbits-skills}/plugins/spec-to-code-compliance/skills/spec-to-code-compliance";    
-    fp-check = "${trailofbits-skills}/plugins/fp-check/skills/fp-check";
-    property-based-testing = "${trailofbits-skills}/plugins/property-based-testing/skills/property-based-testing";
-    mutation-testing = "${trailofbits-skills}/plugins/mutation-testing/skills/mutation-testing";
-    rust-review = "${trailofbits-skills}/plugins/rust-review/skills/rust-review";
-    second-opinion = "${trailofbits-skills}/plugins/second-opinion/skills/second-opinion";
-    supply-chain-risk-auditor = "${trailofbits-skills}/plugins/supply-chain-risk-auditor/skills/supply-chain-risk-auditor";
-    planning-with-files = "${trailofbits-skills-curated}/plugins/planning-with-files/skills/planning-with-files";
-    openai-gh-fix-ci = "${trailofbits-skills-curated}/plugins/openai-gh-fix-ci/skills/openai-gh-fix-ci";
-    audit-context-building = "${trailofbits-skills}/plugins/audit-context-building/skills/audit-context-building";
-    differential-review = "${trailofbits-skills}/plugins/differential-review/skills/differential-review";
-    dimensional-analysis = "${trailofbits-skills}/plugins/dimensional-analysis/skills/dimensional-analysis";
-    audit-augmentation = "${trailofbits-skills}/plugins/trailmark/skills/audit-augmentation";
-    crypto-protocol-diagram = "${trailofbits-skills}/plugins/trailmark/skills/crypto-protocol-diagram";
-    diagramming-code = "${trailofbits-skills}/plugins/trailmark/skills/diagramming-code";
-    genotoxic = "${trailofbits-skills}/plugins/trailmark/skills/genotoxic";
-    graph-evolution = "${trailofbits-skills}/plugins/trailmark/skills/graph-evolution";
-    mermaid-to-proverif = "${trailofbits-skills}/plugins/trailmark/skills/mermaid-to-proverif";
-    slicing-code-context = "${trailofbits-skills}/plugins/trailmark/skills/slicing-code-context";
-    trailmark = "${trailofbits-skills}/plugins/trailmark/skills/trailmark";
-    trailmark-finding-triage = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-finding-triage";
-    trailmark-review-gate = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-review-gate";
-    trailmark-structural = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-structural";
-    trailmark-summary = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-summary";
-    trailmark-variant-neighborhood = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-variant-neighborhood";
-    vector-forge = "${trailofbits-skills}/plugins/trailmark/skills/vector-forge";
-    dba-review = dba-review;
-    sql-code-review = "${awesome-copilot}/skills/sql-code-review";
-    postgresql-code-review = "${awesome-copilot}/skills/postgresql-code-review";
-    database-migrations-sql-migrations = "${agentic-awesome-skills}/skills/database-migrations-sql-migrations";
-    postgresql-optimization = "${awesome-copilot}/skills/postgresql-optimization";
-    postgresql = "${agentic-awesome-skills}/skills/postgresql";
-    sql-optimization-patterns = "${wshobson-agents}/plugins/developer-essentials/skills/sql-optimization-patterns";
-  };
-  sharedAgentSkills = proseAgentSkills // codeAnalysisAgentSkills // setupSkills;
+  # Select source roots; agent-skills-nix discovers every nested SKILL.md.
+  skillSources =
+    lib.genAttrs
+      [
+        "modern-python"
+        "code-improver"
+        "spec-to-code-compliance"
+        "fp-check"
+        "property-based-testing"
+        "mutation-testing"
+        "rust-review"
+        "second-opinion"
+        "supply-chain-risk-auditor"
+        "audit-context-building"
+        "differential-review"
+        "dimensional-analysis"
+        "trailmark"
+      ]
+      (name: {
+        path = "${trailofbits-skills}/plugins/${name}/skills";
+      })
+    //
+      lib.genAttrs
+        [
+          "planning-with-files"
+          "openai-gh-fix-ci"
+        ]
+        (name: {
+          path = "${trailofbits-skills-curated}/plugins/${name}/skills";
+        })
+    //
+      lib.genAttrs
+        [
+          "sql-code-review"
+          "postgresql-code-review"
+          "postgresql-optimization"
+        ]
+        (name: {
+          path = "${awesome-copilot}/skills/${name}";
+        })
+    //
+      lib.genAttrs
+        [
+          "database-migrations-sql-migrations"
+          "postgresql"
+        ]
+        (name: {
+          path = "${agentic-awesome-skills}/skills/${name}";
+        })
+    // {
+      i-have-adhd.path = "${i-have-adhd}/skills";
+      caveman.path = "${caveman}/skills";
+      asd-ste100-skill.path = asd-ste100-skill;
+      dba-review.path = dba-review;
+      agy.path = "${codex-agy-plugin}/plugins/codex-agy-plugin/skills";
+      sql-optimization-patterns.path = "${wshobson-agents}/plugins/developer-essentials/skills/sql-optimization-patterns";
+    };
   agySharedSkills = pkgs.linkFarm "agy-codex-skills" [
     {
       name = "plugin.json";
@@ -103,9 +117,7 @@ let
     }
     {
       name = "skills";
-      path = pkgs.linkFarm "agy-codex-skill-entries" (
-        lib.mapAttrsToList (name: path: { inherit name path; }) sharedAgentSkills
-      );
+      path = config.programs.agent-skills.bundlePath;
     }
   ];
   strandRustCoderModel =
@@ -243,95 +255,112 @@ let
   };
 in
 {
-  home.file =
-    lib.mapAttrs' (
-      name: source:
-      lib.nameValuePair ".codex/skills/${name}" {
-        inherit source;
-        force = true;
+  imports = [ agent-skills-nix.homeManagerModules.default ];
+
+  programs.agent-skills = {
+    enable = true;
+    sources = lib.mapAttrs (
+      _: source:
+      source
+      // {
+        filter.maxDepth = null;
       }
-    ) sharedAgentSkills
-    // {
-      ".codex/config.toml".source = tomlFormat.generate "codex-config.toml" codexConfig;
-      ".gemini/antigravity-cli/settings.json".text = builtins.toJSON {
-        allowNonWorkspaceAccess = true;
-        model = agyModel;
-        permissions.allow = [
-          "command(git clone)"
-          "command(git fetch)"
-          "command(git checkout)"
-          "command(git show)"
-          "command(git log)"
-          "command(git diff)"
-          "command(nix)"
-          "command(lsof)"
-          "command(ps)"
-          "command(grep)"
-          "command(psql)"
-          "command(env)"
-          "command(cat)"
-          "command(xargs)"
-          "command(diff)"
-          "command(git status)"
-          "command(z)"
-          "command(git restore)"
-          "command(git grep)"
-          "command(git merge-base)"
-          "command(gh)"
-          "command(mkdir)"
-          "command(ls)"
-          "command(git worktree)"
-          "command(pkill)"
-          "command(fd)"
-          "command(sd)"
-          "command(fzf)"
-          "command(cp)"
-          "command(sleep)"
-          "command(docker ps)"
-          "command(cargo update)"
-          "command(git branch)"
-          "command(git add)"
-          "command(git commit)"
-          "command(git rev-parse)"
-          "command(head)"
-          "command(mv)"
-          "command(wait)"
-          "command(agy)"
-          "command(which)"
-          "command(darwin-rebuild)"
-          "command(date)"
-          "command(pwd)"
-          "command(curl)"
-          "command(cargo init --lib)"
-          "command(cargo test)"
-          "command(cargo check --tests)"
-          "command(cargo check --all-targets)"
-          "command(cargo check)"
-          "command(git pull)"
-          "command(git remote)"
-          "command(magic)"
-          "command(git reflog)"
-          "command(jj status)"
-          "command(jj log)"
-          "command(jj bookmark)"
-        ];
-        trustedWorkspaces = [ "/Users/dz/overlay/github.com" ];
+    ) skillSources;
+    skills.enableAll = true;
+    targets = {
+      codex = {
+        enable = true;
+        dest = ".codex/skills";
+        structure = "link";
       };
-      ".codex/plugins/cache/codex-agy-plugin/codex-agy-plugin/0.1.11" = {
-        source = "${codex-agy-plugin}/plugins/codex-agy-plugin";
-        recursive = true;
+      antigravity = {
+        enable = true;
+        dest = ".gemini/antigravity/skills";
+        structure = "link";
       };
-      ".codex/skills/agy".source = "${codex-agy-plugin}/plugins/codex-agy-plugin/skills/agy";
-      # Keep rust-review's scripts, prompts, and agent definitions discoverable by its fallback search.
-      ".codex/plugins/rust-review" = {
-        source = "${trailofbits-skills}/plugins/rust-review";
-        recursive = true;
-      };
-      ".gemini/config/plugins/conductor".source = agy-conductor;
-      ".gemini/config/plugins/postgres".source = agy-postgres;
-      ".gemini/config/plugins/codex-skills".source = agySharedSkills;
-      ".config/shell_gpt/.sgptrc".text = lib.generators.toKeyValue { } shellGptConfig;
     };
+  };
+
+  home.file = {
+    ".codex/config.toml".source = tomlFormat.generate "codex-config.toml" codexConfig;
+    ".gemini/antigravity-cli/settings.json".text = builtins.toJSON {
+      allowNonWorkspaceAccess = true;
+      model = agyModel;
+      permissions.allow = [
+        "command(git clone)"
+        "command(git fetch)"
+        "command(git checkout)"
+        "command(git show)"
+        "command(git log)"
+        "command(git diff)"
+        "command(nix)"
+        "command(lsof)"
+        "command(ps)"
+        "command(grep)"
+        "command(psql)"
+        "command(env)"
+        "command(cat)"
+        "command(xargs)"
+        "command(diff)"
+        "command(git status)"
+        "command(z)"
+        "command(git restore)"
+        "command(git grep)"
+        "command(git merge-base)"
+        "command(gh)"
+        "command(mkdir)"
+        "command(ls)"
+        "command(git worktree)"
+        "command(pkill)"
+        "command(fd)"
+        "command(sd)"
+        "command(fzf)"
+        "command(cp)"
+        "command(sleep)"
+        "command(docker ps)"
+        "command(cargo update)"
+        "command(git branch)"
+        "command(git add)"
+        "command(git commit)"
+        "command(git rev-parse)"
+        "command(head)"
+        "command(mv)"
+        "command(wait)"
+        "command(agy)"
+        "command(which)"
+        "command(darwin-rebuild)"
+        "command(date)"
+        "command(pwd)"
+        "command(curl)"
+        "command(cargo init --lib)"
+        "command(cargo test)"
+        "command(cargo check --tests)"
+        "command(cargo check --all-targets)"
+        "command(cargo check)"
+        "command(git pull)"
+        "command(git remote)"
+        "command(magic)"
+        "command(git reflog)"
+        "command(jj status)"
+        "command(jj log)"
+        "command(jj bookmark)"
+      ];
+      trustedWorkspaces = [ "/Users/dz/overlay/github.com" ];
+    };
+    ".codex/plugins/cache/codex-agy-plugin/codex-agy-plugin/0.1.11" = {
+      source = "${codex-agy-plugin}/plugins/codex-agy-plugin";
+      recursive = true;
+    };
+    # Keep rust-review's scripts, prompts, and agent definitions discoverable by its fallback search.
+    ".codex/plugins/rust-review" = {
+      source = "${trailofbits-skills}/plugins/rust-review";
+      recursive = true;
+    };
+    ".gemini/config/plugins/conductor".source = agy-conductor;
+    ".gemini/config/plugins/postgres".source = agy-postgres;
+    ".gemini/config/plugins/codex-skills".source = agySharedSkills;
+    ".config/shell_gpt/.sgptrc".text = lib.generators.toKeyValue { } shellGptConfig;
+  };
 
   # home.file.".continue/config.yaml".source =
   #   yamlFormat.generate "continue-config.yaml" continueConfig;

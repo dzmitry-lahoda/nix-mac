@@ -28,6 +28,11 @@
       url = "github:sysCat64/codex-agy-plugin";
       flake = false;
     };
+    agent-skills-nix = {
+      url = "github:Kyure-A/agent-skills-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
     trailofbits-skills = {
       url = "github:trailofbits/skills";
       flake = false;
@@ -91,6 +96,7 @@
       agy-conductor,
       agy-postgres,
       codex-agy-plugin,
+      agent-skills-nix,
       trailofbits-skills,
       trailofbits-ask-questions,
       trailofbits-skills-curated,
@@ -187,7 +193,12 @@
                 inherit codex-cli-nix;
                 inherit hermes-agent;
                 inherit antigravity-nix;
-                inherit agy-conductor agy-postgres codex-agy-plugin;
+                inherit
+                  agy-conductor
+                  agy-postgres
+                  codex-agy-plugin
+                  agent-skills-nix
+                  ;
                 inherit
                   trailofbits-skills
                   trailofbits-ask-questions
@@ -264,7 +275,12 @@
           inherit codex-cli-nix;
           inherit hermes-agent;
           inherit antigravity-nix;
-          inherit agy-conductor agy-postgres codex-agy-plugin;
+          inherit
+            agy-conductor
+            agy-postgres
+            codex-agy-plugin
+            agent-skills-nix
+            ;
           inherit
             trailofbits-skills
             trailofbits-ask-questions
