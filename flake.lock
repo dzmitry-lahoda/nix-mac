@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "agentic-awesome-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788888000,
+        "narHash": "sha256-ZjW5RrBHO9KcuVImTG7x6TA9aulRw2iML8ta+nup+1U=",
+        "owner": "sickn33",
+        "repo": "agentic-awesome-skills",
+        "rev": "78acbe3f333315cfdd887c81a11aa1ffe42f8e64",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sickn33",
+        "repo": "agentic-awesome-skills",
+        "type": "github"
+      }
+    },
     "agy-conductor": {
       "flake": false,
       "locked": {
@@ -64,6 +80,22 @@
       "original": {
         "owner": "danyuchn",
         "repo": "asd-ste100-skill",
+        "type": "github"
+      }
+    },
+    "awesome-copilot": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788840237,
+        "narHash": "sha256-E476CEZ6YkYbB2Hfe+jALg6nyBvQRTRuqzsUj5wIQrU=",
+        "owner": "github",
+        "repo": "awesome-copilot",
+        "rev": "f95f1b4c3b153984e3da2744cef395c2355d0a44",
+        "type": "github"
+      },
+      "original": {
+        "owner": "github",
+        "repo": "awesome-copilot",
         "type": "github"
       }
     },
@@ -499,10 +531,12 @@
     },
     "root": {
       "inputs": {
+        "agentic-awesome-skills": "agentic-awesome-skills",
         "agy-conductor": "agy-conductor",
         "agy-postgres": "agy-postgres",
         "antigravity-nix": "antigravity-nix",
         "asd-ste100-skill": "asd-ste100-skill",
+        "awesome-copilot": "awesome-copilot",
         "caveman": "caveman",
         "codex-agy-plugin": "codex-agy-plugin",
         "codex-cli-nix": "codex-cli-nix",
@@ -518,6 +552,7 @@
         "trailofbits-ask-questions": "trailofbits-ask-questions",
         "trailofbits-skills": "trailofbits-skills",
         "trailofbits-skills-curated": "trailofbits-skills-curated",
+        "wshobson-agents": "wshobson-agents",
         "zed": "zed"
       }
     },
@@ -687,6 +722,22 @@
       "original": {
         "owner": "pyproject-nix",
         "repo": "uv2nix",
+        "type": "github"
+      }
+    },
+    "wshobson-agents": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788302183,
+        "narHash": "sha256-sL/1lVCj20Z7WItLZEbafGuw8ifsou0bnPKR9Z77KDM=",
+        "owner": "wshobson",
+        "repo": "agents",
+        "rev": "a30778f8c4e6b0a87567941b7cca4f534bf642b6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "wshobson",
+        "repo": "agents",
         "type": "github"
       }
     },

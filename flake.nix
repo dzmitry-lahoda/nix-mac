@@ -45,6 +45,18 @@
       url = "github:dhdtech/dba-review";
       flake = false;
     };
+    awesome-copilot = {
+      url = "github:github/awesome-copilot";
+      flake = false;
+    };
+    agentic-awesome-skills = {
+      url = "github:sickn33/agentic-awesome-skills";
+      flake = false;
+    };
+    wshobson-agents = {
+      url = "github:wshobson/agents";
+      flake = false;
+    };
     asd-ste100-skill = {
       url = "github:danyuchn/asd-ste100-skill";
       flake = false;
@@ -83,6 +95,9 @@
       trailofbits-ask-questions,
       trailofbits-skills-curated,
       dba-review,
+      awesome-copilot,
+      agentic-awesome-skills,
+      wshobson-agents,
       caveman,
       i-have-adhd,
       asd-ste100-skill,
@@ -178,6 +193,9 @@
                   trailofbits-ask-questions
                   trailofbits-skills-curated
                   dba-review
+                  awesome-copilot
+                  agentic-awesome-skills
+                  wshobson-agents
                   caveman
                   i-have-adhd
                   asd-ste100-skill
@@ -252,6 +270,9 @@
             trailofbits-ask-questions
             trailofbits-skills-curated
             dba-review
+            awesome-copilot
+            agentic-awesome-skills
+            wshobson-agents
             caveman
             i-have-adhd
             asd-ste100-skill

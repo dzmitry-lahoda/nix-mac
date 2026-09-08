@@ -11,6 +11,9 @@
   trailofbits-skills,
   trailofbits-skills-curated,
   dba-review,
+  awesome-copilot,
+  agentic-awesome-skills,
+  wshobson-agents,
   caveman,
   i-have-adhd,
   asd-ste100-skill,
@@ -48,6 +51,9 @@ let
     caveman = "${caveman}/skills/caveman";
     asd-ste100-skill = asd-ste100-skill;
   };
+  setupSkills = {
+    modern-python = "${trailofbits-skills}/plugins/modern-python/skills/modern-python";
+  };
   codeAnalysisAgentSkills = {
     code-improver = "${trailofbits-skills}/plugins/code-improver/skills/code-improver";
     spec-to-code-compliance = "${trailofbits-skills}/plugins/spec-to-code-compliance/skills/spec-to-code-compliance";    
@@ -56,7 +62,6 @@ let
     mutation-testing = "${trailofbits-skills}/plugins/mutation-testing/skills/mutation-testing";
     rust-review = "${trailofbits-skills}/plugins/rust-review/skills/rust-review";
     second-opinion = "${trailofbits-skills}/plugins/second-opinion/skills/second-opinion";
-    modern-python = "${trailofbits-skills}/plugins/modern-python/skills/modern-python";
     supply-chain-risk-auditor = "${trailofbits-skills}/plugins/supply-chain-risk-auditor/skills/supply-chain-risk-auditor";
     planning-with-files = "${trailofbits-skills-curated}/plugins/planning-with-files/skills/planning-with-files";
     openai-gh-fix-ci = "${trailofbits-skills-curated}/plugins/openai-gh-fix-ci/skills/openai-gh-fix-ci";
@@ -78,8 +83,14 @@ let
     trailmark-variant-neighborhood = "${trailofbits-skills}/plugins/trailmark/skills/trailmark-variant-neighborhood";
     vector-forge = "${trailofbits-skills}/plugins/trailmark/skills/vector-forge";
     dba-review = dba-review;
+    sql-code-review = "${awesome-copilot}/skills/sql-code-review";
+    postgresql-code-review = "${awesome-copilot}/skills/postgresql-code-review";
+    database-migrations-sql-migrations = "${agentic-awesome-skills}/skills/database-migrations-sql-migrations";
+    postgresql-optimization = "${awesome-copilot}/skills/postgresql-optimization";
+    postgresql = "${agentic-awesome-skills}/skills/postgresql";
+    sql-optimization-patterns = "${wshobson-agents}/plugins/developer-essentials/skills/sql-optimization-patterns";
   };
-  sharedAgentSkills = proseAgentSkills // codeAnalysisAgentSkills;
+  sharedAgentSkills = proseAgentSkills // codeAnalysisAgentSkills // setupSkills;
   agySharedSkills = pkgs.linkFarm "agy-codex-skills" [
     {
       name = "plugin.json";
